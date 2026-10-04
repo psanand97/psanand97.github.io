@@ -90,6 +90,7 @@
   const ppLine = $("ppLine");
   const ppPencil = $("ppPencil");
   const rocket = $("rocketTop");
+  let landing = false; // true from launch until the page is back near the top
   let scrollQueued = false;
   const scrollHooks = []; // more scroll-driven effects register here (see bottom of file)
   const updateScrollFx = () => {
@@ -100,7 +101,8 @@
     // Pencil tip sits 32.6px into the 34px-wide drawing
     ppPencil.style.transform = `translateX(${p * ppLine.offsetWidth - 32.6}px)`;
     ppPencil.style.opacity = p > 0.003 ? "1" : "0";
-    if (!rocket.classList.contains("launch")) rocket.classList.toggle("show", window.scrollY > 700);
+    if (landing && window.scrollY <= 700) landing = false;
+    if (!landing && !rocket.classList.contains("launch")) rocket.classList.toggle("show", window.scrollY > 700);
     scrollHooks.forEach((fn) => fn(p));
   };
   const queueScrollFx = () => {
@@ -123,7 +125,12 @@
     const r = rocket.getBoundingClientRect();
     burst(r.left + r.width / 2, r.bottom, ["💨", "✨", "⭐", "☁️"], 10, 0.6);
     rocket.classList.add("launch");
+    landing = true;
     window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+  window.addEventListener("scrollend", () => {
+    landing = false; // in case the visitor interrupts the trip up
+    queueScrollFx();
   });
   rocket.addEventListener("animationend", (e) => {
     if (e.animationName !== "launch") return;
@@ -147,6 +154,10 @@
     let ci = Array.from(WORDS[0]).length;
     let dir = -1;
     const step = () => {
+      if (hero.classList.contains("is-paused") || document.hidden) {
+        setTimeout(step, 500);
+        return;
+      }
       const chars = Array.from(WORDS[wi]);
       ci += dir;
       typer.textContent = chars.slice(0, ci).join("");
@@ -221,6 +232,7 @@
     arm: $("prArm"),
     knob: $("prKnob"),
     hit: $("prKnobHit"),
+    armHit: $("prArmHit"),
     wedge: $("prWedge"),
     value: $("angleValue"),
     type: $("angleType"),
@@ -267,6 +279,8 @@
     els.knob.setAttribute("cy", y);
     els.hit.setAttribute("cx", x);
     els.hit.setAttribute("cy", y);
+    els.armHit.setAttribute("x2", x);
+    els.armHit.setAttribute("y2", y);
     const wx = (CX + WEDGE * Math.cos(rad)).toFixed(1);
     const wy = (CY - WEDGE * Math.sin(rad)).toFixed(1);
     els.wedge.setAttribute("d", a === 0 ? "" : `M${CX} ${CY}L${CX + WEDGE} ${CY}A${WEDGE} ${WEDGE} 0 0 0 ${wx} ${wy}Z`);
@@ -302,6 +316,11 @@
     stopSweep();
     els.note.setAttribute("aria-live", "polite");
   };
+  // Stop the demo once the slider has focus (screen readers would read every value) or a mouse is over it
+  pr.addEventListener("focus", takeOver);
+  pr.addEventListener("pointerenter", (e) => {
+    if (e.pointerType === "mouse") takeOver();
+  });
   if (!reduceMotion) {
     new IntersectionObserver(([e]) => {
       if (e.isIntersecting && !userTookOver && !sweepRaf) sweepRaf = requestAnimationFrame(sweep);
@@ -317,28 +336,31 @@
     return (Math.atan2(dy, dx) * 180) / Math.PI;
   };
   let dragging = false;
-  els.hit.addEventListener("pointerdown", (e) => {
-    takeOver();
-    dragging = true;
-    pr.classList.add("dragging");
-    els.hit.setPointerCapture(e.pointerId);
-    setAngle(angleFromEvent(e), true);
-    e.preventDefault();
-  });
-  els.hit.addEventListener("pointermove", (e) => {
-    if (dragging) setAngle(angleFromEvent(e), true);
-  });
   const endDrag = () => {
     dragging = false;
     pr.classList.remove("dragging");
   };
-  els.hit.addEventListener("pointerup", endDrag);
-  els.hit.addEventListener("pointercancel", endDrag);
-  // Stop the page scrolling while a finger drags the knob
+  // Both the knob and the whole arm can be grabbed and dragged
+  [els.hit, els.armHit].forEach((handle) => {
+    handle.addEventListener("pointerdown", (e) => {
+      takeOver();
+      dragging = true;
+      pr.classList.add("dragging");
+      handle.setPointerCapture(e.pointerId);
+      setAngle(angleFromEvent(e), true);
+      e.preventDefault();
+    });
+    handle.addEventListener("pointermove", (e) => {
+      if (dragging) setAngle(angleFromEvent(e), true);
+    });
+    handle.addEventListener("pointerup", endDrag);
+    handle.addEventListener("pointercancel", endDrag);
+  });
+  // Stop the page scrolling while a finger drags the knob (a swipe along the arm can still scroll)
   els.hit.addEventListener("touchstart", (e) => e.preventDefault(), { passive: false });
   // Tap anywhere else on the protractor to jump the arm there
   pr.addEventListener("click", (e) => {
-    if (e.target === els.hit) return;
+    if (e.target === els.hit || e.target === els.armHit) return;
     takeOver();
     setAngle(angleFromEvent(e), true);
   });
@@ -408,6 +430,7 @@
   let pos = 0;
   let score = 0;
   let solved = false;
+  let announceQuestions = false; // stay quiet on the first question at page load
 
   const bump = (el) => {
     el.classList.remove("bump");
@@ -453,6 +476,8 @@
     tagEl.dataset.subject = t.s;
     qEl.textContent = t.q;
     fbEl.textContent = "";
+    if (announceQuestions) $("quizAnnounce").textContent = `New ${tagEl.textContent.replace(/^\S+\s/, "")} question: ${t.q}`;
+    announceQuestions = true;
     optsEl.replaceChildren(
       ...t.o.map((text, i) => {
         const b = document.createElement("button");
@@ -474,9 +499,11 @@
     b.setAttribute("aria-pressed", String(key === subject));
     b.addEventListener("click", () => {
       if (key === subject) return;
+      const current = order[pos];
       subject = key;
       tabs.forEach((el, i) => el.setAttribute("aria-pressed", String(SUBJECTS[i].key === key)));
       order = shuffle(pool());
+      if (order.length > 1 && order[0] === current) [order[0], order[1]] = [order[1], order[0]];
       pos = 0;
       showTeaser();
     });
@@ -546,15 +573,16 @@
     bitsEl.classList.remove("chase");
     binValue ^= v;
     renderBinary();
-    if (binSolved) return;
     if (binValue === binTarget) {
-      binSolved = true;
-      binScore++;
-      binScoreEl.textContent = binScore;
-      bump(binScoreEl.parentElement);
+      if (!binSolved) {
+        binSolved = true;
+        binScore++;
+        binScoreEl.textContent = binScore;
+        bump(binScoreEl.parentElement);
+        const r = $("binDec").getBoundingClientRect();
+        burst(r.left + r.width / 2, r.top + r.height / 2, ["💡", "⚡", "1", "0", "✨", "⭐"], 22, 1.2);
+      }
       binNote.textContent = `🎉 Yes! ${binTarget} in binary is ${binTarget.toString(2).padStart(8, "0")}. Try a new number!`;
-      const r = $("binDec").getBoundingClientRect();
-      burst(r.left + r.width / 2, r.top + r.height / 2, ["💡", "⚡", "1", "0", "✨", "⭐"], 22, 1.2);
     } else if (binValue > binTarget) {
       binNote.textContent = `${binValue} is too big — switch a bulb off.`;
     } else {
@@ -628,6 +656,13 @@
 
   // ---------- Did-you-know ticker: duplicate items for a seamless loop ----------
   const track = $("factsTrack");
+  const factsToggle = $("factsToggle");
+  factsToggle.addEventListener("click", () => {
+    const paused = track.closest(".facts").classList.toggle("paused");
+    factsToggle.setAttribute("aria-pressed", String(paused));
+    factsToggle.setAttribute("aria-label", paused ? "Play fun facts" : "Pause fun facts");
+    factsToggle.innerHTML = `<i class="fa-solid fa-${paused ? "play" : "pause"}" aria-hidden="true"></i>`;
+  });
   if (!reduceMotion) {
     [...track.children].forEach((li) => {
       const clone = li.cloneNode(true);

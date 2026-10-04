@@ -41,8 +41,8 @@ img { max-width: 100%; display: block; }
 .btn-lg { padding: 15px 30px; font-size: 16px; }
 .btn-block { width: 100%; }
 .btn-primary { background: linear-gradient(135deg, var(--primary), #7c3aed); color: #fff; box-shadow: var(--shadow-lg); }
-.btn-whatsapp { background: var(--whatsapp); color: #fff; box-shadow: 0 10px 25px rgba(37, 211, 102, .3); }
-.btn-whatsapp:hover { background: var(--whatsapp-dark); }
+.btn-whatsapp { background: #15803d; color: #fff; box-shadow: 0 10px 25px rgba(21, 128, 61, .3); }
+.btn-whatsapp:hover { background: #166534; }
 .btn-light { background: #fff; color: var(--primary); }
 .btn-outline { background: transparent; color: var(--primary); border-color: var(--primary); }
 .btn-outline:hover { background: var(--primary); color: #fff; }
@@ -265,7 +265,7 @@ img { max-width: 100%; display: block; }
 .footer ul i { color: #818cf8; width: 18px; }
 .footer a:hover { color: #fff; }
 .footer .muted { color: #94a3b8; margin-top: 14px; }
-.copyright { border-top: 1px solid #1e293b; margin-top: 50px; padding-top: 22px; text-align: center; font-size: 14px; color: #64748b; }
+.copyright { border-top: 1px solid #1e293b; margin-top: 50px; padding-top: 22px; text-align: center; font-size: 14px; color: #94a3b8; }
 
 /* ---------- Chat widget ---------- */
 .chat-widget { position: fixed; right: 22px; bottom: 22px; z-index: 60; }
@@ -339,9 +339,10 @@ img { max-width: 100%; display: block; }
   .nav-links {
     position: fixed; top: 72px; left: 0; right: 0; flex-direction: column; align-items: stretch; gap: 0;
     background: #fff; padding: 10px 16px 20px; box-shadow: 0 20px 30px rgba(15, 23, 42, .1);
-    transform: translateY(-120%); transition: transform .3s; z-index: -1;
+    transform: translateY(-120%); transition: transform .3s, visibility .3s; z-index: -1;
+    visibility: hidden; /* keeps the closed menu's links out of the Tab order */
   }
-  .nav-links.open { transform: none; }
+  .nav-links.open { transform: none; visibility: visible; }
   .nav-links a { padding: 14px 4px; border-bottom: 1px solid var(--border); }
   .nav-links a::after { display: none; }
   .nav-cta { margin-top: 14px; }

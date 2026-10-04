@@ -64,6 +64,10 @@
 .chip:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
 .chip:hover i { animation: pop .5s ease; }
 .chip:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+/* Darker text on the lighter chips for readable contrast */
+.chip.c3 { color: #15803d; }
+.chip.c5 { color: #0369a1; }
+.chip.c4 { color: #be185d; }
 
 /* Floating doodles */
 .hero-doodles { position: absolute; inset: 0; z-index: -1; pointer-events: none; color: var(--primary); }
@@ -108,6 +112,9 @@
 .main-card { position: relative; z-index: 1; }
 .float-card { z-index: 2; }
 .fc-2 { top: 20%; } /* keep it clear of the card heading */
+@media (min-width: 981px) { .fc-2 { top: 0; } } /* and clear of the card's icon tile on narrower desktops */
+@media (min-width: 981px) and (max-width: 1120px) { .hero-visual .orbit { --size: 380px; } } /* don't clip at the right edge */
+@media (max-width: 980px) { .hero-visual { margin-top: 60px; } } /* keep orbiting icons off the subject chips */
 .orbit {
   --size: min(440px, 88vw);
   position: absolute; top: 50%; left: 50%; width: var(--size); height: var(--size);
@@ -182,7 +189,8 @@
   box-shadow: inset 0 0 40px rgba(0, 0, 0, .35), 0 0 0 2px #6f421e, 0 18px 40px rgba(15, 23, 42, .18);
 }
 .board-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
-.chalk-title { font: 700 30px "Caveat", cursive; color: #fff; text-shadow: 0 0 1px rgba(255, 255, 255, .6); }
+.chalk-title { margin: 0; font: 700 30px/1.2 "Caveat", cursive; color: #fff; text-shadow: 0 0 1px rgba(255, 255, 255, .6); }
+.board-head .score { margin-left: auto; }
 .board-hint { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: #a7f3d0; }
 .board-hint i { animation: tap 1.6s ease-in-out infinite; }
 @keyframes tap { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
@@ -197,6 +205,7 @@
 .board-subject {
   margin-left: 6px; padding: 2px 9px; border: 1px dashed rgba(167, 243, 208, .6); border-radius: 999px;
   color: #a7f3d0; font: 600 12px "Inter", sans-serif; vertical-align: middle; text-shadow: none;
+  display: inline-block; white-space: nowrap;
 }
 
 /* Protractor */
@@ -218,6 +227,8 @@
 .pr-arm { stroke: #f472b6; stroke-width: 3.5; stroke-linecap: round; }
 .pr-knob { fill: #f472b6; stroke: #fff; stroke-width: 3; pointer-events: none; transform-box: fill-box; transform-origin: center; animation: knobPulse 1.8s ease-in-out infinite; }
 .pr-knob-hit { fill: transparent; cursor: grab; }
+.pr-arm-hit { stroke: transparent; stroke-width: 24; stroke-linecap: round; pointer-events: stroke; cursor: grab; }
+.protractor.dragging .pr-arm-hit { cursor: grabbing; }
 .protractor.dragging .pr-knob-hit { cursor: grabbing; }
 .protractor.dragging .pr-knob { animation: none; transform: scale(1.25); }
 .pr-center { fill: #fff; }
@@ -225,7 +236,7 @@
 .angle-readout { display: flex; align-items: baseline; justify-content: center; gap: 14px; margin-top: 4px; }
 .angle-value { min-width: 2.4em; text-align: right; font: 700 48px/1 "Caveat", cursive; color: #fde68a; font-variant-numeric: tabular-nums; }
 .angle-type { font: 700 28px "Caveat", cursive; color: #fff; }
-.board-note { text-align: center; color: #d1fae5; font-size: 15px; min-height: 3em; margin-top: 6px; }
+.board-note { text-align: center; color: #d1fae5; font-size: 15px; min-height: 3.4em; margin-top: 6px; }
 /* Centre the angle explorer vertically when the quiz board next to it is taller */
 .board > .protractor { margin-top: auto; }
 .protractor ~ .board-note { margin-bottom: auto; }
@@ -320,8 +331,16 @@
 .facts { display: flex; align-items: stretch; margin-top: 70px; background: #fff; border-block: 1px solid var(--border); }
 .facts-label {
   flex: none; display: flex; align-items: center; gap: 8px; padding: 14px 20px;
-  background: var(--accent); color: #fff; font: 700 15px "Poppins", sans-serif;
+  background: var(--accent); color: var(--ink); font: 700 15px "Poppins", sans-serif;
 }
+.facts-toggle {
+  display: grid; place-items: center; width: 26px; height: 26px; margin-left: 4px; border: 0; border-radius: 50%;
+  background: rgba(15, 23, 42, .15); color: var(--ink); font-size: 11px; cursor: pointer;
+}
+.facts-toggle:hover { background: rgba(15, 23, 42, .25); }
+.facts-toggle:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.facts.paused .facts-track, .facts:focus-within .facts-track { animation-play-state: paused; }
+.facts-window:focus-visible { outline: 2px solid var(--primary); outline-offset: -2px; }
 .facts-label i { animation: glow 2s ease-in-out infinite; }
 .facts-window {
   flex: 1; overflow: hidden;
@@ -578,7 +597,10 @@ html, body { overflow-x: clip; }
   .bulb { width: 40px; height: 40px; }
   .bin-code { font-size: 22px; letter-spacing: 2px; }
   .bin-dec { font-size: 42px; }
-  .quiz-feedback { padding-right: 84px; }
+  .quiz-feedback { padding-right: 84px; min-height: 6.5em; }
+  .quiz-q { min-height: 3.75em; }
+  .quiz-opt { min-height: 60px; }
+  .footer { padding-bottom: 96px; }
   .angle-value { font-size: 42px; }
   .angle-type { font-size: 24px; }
   .facts-label { padding: 12px 14px; font-size: 14px; }
@@ -593,14 +615,16 @@ html, body { overflow-x: clip; }
   .doodle svg, .formula, .orbit, .oi, .float-card, .plane, .plane i, .facts-track, .cmp-arm, .cmp-circle,
   .badge i, .hero-actions .btn-primary::after, .chip:hover i, .owl-eyes, .board-hint i, .pr-knob, .typer-caret,
   .facts-label i, .doodle .needle, .chat-fab::before, .photo-tag, .tube-liquid i, .cc-icon,
-  .space-hint, .hero-space::before, .rocket-top.full {
+  .space-hint, .hero-space::before, .rocket-top.full,
+  .logo-mark i, .cc-icon i, .cc-icon::before, .cc-icon::after, .why i, .quiz-opt, .owl, .score,
+  .rocket-top i, .rocket-top .flame, .chip i, .bit .bulb, .board-hint i {
     animation: none !important;
   }
   .reveal, .reveal.reveal-flip, .reveal.reveal-pop, .reveal.reveal-swing, .reveal.reveal-right, .reveal.reveal-left {
     opacity: 1 !important; transform: none !important; transition: none !important;
   }
   .cmp-circle { stroke-dashoffset: 0; }
-  .plane-track { display: none; }
+  .plane-track, .facts-toggle { display: none; }
   .facts-window { overflow-x: auto; -webkit-mask-image: none; mask-image: none; }
   .reveal .section-title::after { transform: none; transition: none; }
   .eyebrow .ch { opacity: 1; transform: none; transition: none; }

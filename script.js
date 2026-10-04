@@ -35,16 +35,14 @@ onScroll();
 // Mobile menu
 const navLinks = document.getElementById("navLinks");
 const menuToggle = document.getElementById("menuToggle");
-menuToggle.addEventListener("click", () => {
-  const open = navLinks.classList.toggle("open");
+const setMenu = (open) => {
+  navLinks.classList.toggle("open", open);
   menuToggle.innerHTML = open ? '<i class="fa-solid fa-xmark"></i>' : '<i class="fa-solid fa-bars"></i>';
-});
-navLinks.querySelectorAll("a").forEach((a) =>
-  a.addEventListener("click", () => {
-    navLinks.classList.remove("open");
-    menuToggle.innerHTML = '<i class="fa-solid fa-bars"></i>';
-  })
-);
+  menuToggle.setAttribute("aria-expanded", String(open));
+  menuToggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+};
+menuToggle.addEventListener("click", () => setMenu(!navLinks.classList.contains("open")));
+navLinks.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => setMenu(false)));
 
 // Active nav link while scrolling
 const sections = [...document.querySelectorAll("section[id]")];
@@ -81,20 +79,31 @@ revealEls.forEach((el) => revealer.observe(el));
 
 // Enquiry modal
 const modal = document.getElementById("enquiryModal");
+let lastFocus = null;
+// While the modal is open, everything behind it is inert so focus can't wander off
+const setBackgroundInert = (inert) =>
+  document.querySelectorAll("body > :not(#enquiryModal):not(script)").forEach((el) => (el.inert = inert));
 const openModal = (subject) => {
   const select = modal.querySelector("select[name=subject]");
   if (subject) select.value = subject;
+  lastFocus = document.activeElement;
   modal.classList.add("open");
   modal.setAttribute("aria-hidden", "false");
+  setBackgroundInert(true);
   setTimeout(() => modal.querySelector("input[name=name]").focus(), 150);
 };
 const closeModal = () => {
+  if (!modal.classList.contains("open")) return;
   modal.classList.remove("open");
   modal.setAttribute("aria-hidden", "true");
+  setBackgroundInert(false);
+  // If the modal was opened from the (now closed) mobile menu, return focus to the menu button
+  const target = lastFocus?.closest?.("#navLinks") && !navLinks.classList.contains("open") ? menuToggle : lastFocus;
+  target?.focus?.({ preventScroll: true });
 };
 document.querySelectorAll("[data-open-enquiry]").forEach((btn) =>
   btn.addEventListener("click", () => {
-    navLinks.classList.remove("open");
+    setMenu(false);
     openModal(btn.dataset.subject);
   })
 );

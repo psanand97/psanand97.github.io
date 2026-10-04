@@ -36,7 +36,7 @@
         <a href="#contact">Contact</a>
         <button class="btn btn-primary nav-cta" data-open-enquiry>Enquire Now</button>
       </nav>
-      <button class="menu-toggle" id="menuToggle" aria-label="Open menu"><i class="fa-solid fa-bars"></i></button>
+      <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-controls="navLinks" aria-expanded="false"><i class="fa-solid fa-bars"></i></button>
     </div>
     <!-- Scroll progress: a pencil that draws a line as you scroll -->
     <div class="pencil-progress" aria-hidden="true">
@@ -257,7 +257,7 @@
         <!-- Angle explorer -->
         <div class="board">
           <div class="board-head">
-            <span class="chalk-title">📐 Angle Explorer <small class="board-subject">Maths</small></span>
+            <h3 class="chalk-title">📐 Angle Explorer <small class="board-subject">Maths</small></h3>
             <span class="board-hint"><i class="fa-solid fa-hand-pointer"></i> Drag the arm</span>
           </div>
           <svg class="protractor" id="protractor" viewBox="0 0 320 186" tabindex="0" role="slider"
@@ -269,6 +269,7 @@
             <path class="pr-square" id="prSquare" d="M160 170v-20h20v20z" />
             <line class="pr-base" x1="160" y1="170" x2="300" y2="170" />
             <line class="pr-arm" id="prArm" x1="160" y1="170" x2="160" y2="30" />
+            <line class="pr-arm-hit" id="prArmHit" x1="160" y1="170" x2="160" y2="30" />
             <circle class="pr-knob-hit" id="prKnobHit" r="22" cx="160" cy="30" />
             <circle class="pr-knob" id="prKnob" r="9" cx="160" cy="30" />
             <circle class="pr-center" cx="160" cy="170" r="5" />
@@ -284,14 +285,15 @@
         <!-- Brain teaser quiz -->
         <div class="board quiz">
           <div class="board-head">
-            <span class="chalk-title">🧠 Subject Quiz</span>
-            <span class="score" title="Correct answers"><i class="fa-solid fa-star"></i> <b id="quizScore">0</b></span>
+            <h3 class="chalk-title">🧠 Subject Quiz</h3>
+            <span class="score" title="Correct answers"><i class="fa-solid fa-star" aria-hidden="true"></i> <span class="sr-only">Correct answers:</span> <b id="quizScore">0</b></span>
           </div>
           <div class="quiz-tabs" id="quizTabs" role="group" aria-label="Choose a subject"></div>
           <span class="quiz-tag" id="quizTag"></span>
           <p class="quiz-q" id="quizQ"></p>
           <div class="quiz-opts" id="quizOpts"></div>
           <p class="quiz-feedback" id="quizFb" aria-live="polite"></p>
+          <p class="sr-only" id="quizAnnounce" aria-live="polite"></p>
           <button class="btn btn-chalk" id="quizNext" type="button">Next puzzle <i class="fa-solid fa-arrow-right"></i></button>
           <svg class="owl" id="owl" viewBox="0 0 120 120" aria-hidden="true">
             <path class="owl-body" d="M20 112c-6-30 0-62 14-76l-6-20 18 12c9-4 19-4 28 0l18-12-6 20c14 14 20 46 14 76z" />
@@ -318,8 +320,8 @@
         <!-- Binary lights (computer science) -->
         <div class="board binary-board">
           <div class="board-head">
-            <span class="chalk-title">💡 Binary Lights <small class="board-subject">Computer Science</small></span>
-            <span class="score" title="Numbers made"><i class="fa-solid fa-bolt"></i> <b id="binScore">0</b></span>
+            <h3 class="chalk-title">💡 Binary Lights <small class="board-subject">Computer Science</small></h3>
+            <span class="score" title="Numbers made"><i class="fa-solid fa-bolt" aria-hidden="true"></i> <span class="sr-only">Numbers made:</span> <b id="binScore">0</b></span>
           </div>
           <p class="binary-goal">Computers count with just 0s and 1s. Switch on bulbs to make <b id="binTarget">25</b></p>
           <div class="bits" id="bits" role="group" aria-label="Binary bits"></div>
@@ -337,8 +339,10 @@
 
     <!-- Did-you-know ticker -->
     <div class="facts">
-      <span class="facts-label"><i class="fa-solid fa-lightbulb"></i> Did you know?</span>
-      <div class="facts-window">
+      <span class="facts-label"><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> Did you know?
+        <button class="facts-toggle" id="factsToggle" type="button" aria-pressed="false" aria-label="Pause fun facts"><i class="fa-solid fa-pause" aria-hidden="true"></i></button>
+      </span>
+      <div class="facts-window" tabindex="0" role="region" aria-label="Fun facts (focus to pause)">
         <ul class="facts-track" id="factsTrack">
           <li>🧮 Aryabhata, born in 476 CE, calculated π as about 3.1416.</li>
           <li>0️⃣ The idea of zero as a number was developed by Indian mathematicians.</li>
@@ -453,11 +457,11 @@
         </div>
       </div>
       <form class="enquiry-form" data-enquiry-form>
-        <div class="field"><label>Student Name</label><input name="name" required placeholder="Enter student name" /></div>
-        <div class="field"><label>Phone</label><input name="phone" type="tel" required placeholder="Your phone number" /></div>
+        <div class="field"><label for="cName">Student Name</label><input id="cName" name="name" required placeholder="Enter student name" /></div>
+        <div class="field"><label for="cPhone">Phone</label><input id="cPhone" name="phone" type="tel" required placeholder="Your phone number" /></div>
         <div class="field-row">
-          <div class="field"><label>Subject</label>
-            <select name="subject" required>
+          <div class="field"><label for="cSubject">Subject</label>
+            <select id="cSubject" name="subject" required>
               <option value="">Select subject</option>
               <option>Mathematics</option>
               <option>Physics</option>
@@ -468,8 +472,8 @@
               <option>Multiple subjects</option>
             </select>
           </div>
-          <div class="field"><label>Class</label>
-            <select name="level" required>
+          <div class="field"><label for="cLevel">Class</label>
+            <select id="cLevel" name="level" required>
               <option value="">Select class</option>
               <option>Class 8</option>
               <option>Class 9</option>
@@ -479,7 +483,7 @@
             </select>
           </div>
         </div>
-        <div class="field"><label>Message</label><textarea name="message" rows="3" placeholder="Board (State / CBSE / ICSE), preferred timing, questions…"></textarea></div>
+        <div class="field"><label for="cMessage">Message</label><textarea id="cMessage" name="message" rows="3" placeholder="Board (State / CBSE / ICSE), preferred timing, questions…"></textarea></div>
         <button type="submit" class="btn btn-whatsapp btn-block"><i class="fa-brands fa-whatsapp"></i> Send Enquiry on WhatsApp</button>
       </form>
     </div>
@@ -571,11 +575,11 @@
       <h3 id="modalTitle">Quick Enquiry</h3>
       <p class="muted">Share a few details and we'll get back to you.</p>
       <form class="enquiry-form plain" data-enquiry-form>
-        <div class="field"><label>Student Name</label><input name="name" required placeholder="Enter student name" /></div>
-        <div class="field"><label>Phone</label><input name="phone" type="tel" required placeholder="Your phone number" /></div>
+        <div class="field"><label for="mName">Student Name</label><input id="mName" name="name" required placeholder="Enter student name" /></div>
+        <div class="field"><label for="mPhone">Phone</label><input id="mPhone" name="phone" type="tel" required placeholder="Your phone number" /></div>
         <div class="field-row">
-          <div class="field"><label>Subject</label>
-            <select name="subject" required>
+          <div class="field"><label for="mSubject">Subject</label>
+            <select id="mSubject" name="subject" required>
               <option value="">Select subject</option>
               <option>Mathematics</option>
               <option>Physics</option>
@@ -586,8 +590,8 @@
               <option>Multiple subjects</option>
             </select>
           </div>
-          <div class="field"><label>Class</label>
-            <select name="level" required>
+          <div class="field"><label for="mLevel">Class</label>
+            <select id="mLevel" name="level" required>
               <option value="">Select class</option>
               <option>Class 8</option>
               <option>Class 9</option>
@@ -597,7 +601,7 @@
             </select>
           </div>
         </div>
-        <div class="field"><label>Message</label><textarea name="message" rows="2" placeholder="Optional"></textarea></div>
+        <div class="field"><label for="mMessage">Message</label><textarea id="mMessage" name="message" rows="2" placeholder="Optional"></textarea></div>
         <button type="submit" class="btn btn-whatsapp btn-block"><i class="fa-brands fa-whatsapp"></i> Send on WhatsApp</button>
         <a class="btn btn-outline btn-block" data-call href="#"><i class="fa-solid fa-phone"></i> Or Call Us Now</a>
       </form>
