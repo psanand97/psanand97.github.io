@@ -363,6 +363,80 @@
 @keyframes flicker { to { transform: scaleX(.75); opacity: .8; } }
 @keyframes launch { 0% { transform: translateY(0); } 15% { transform: translateY(6px); } 100% { transform: translateY(-110vh); } }
 
+/* ---------- Scroll-driven fun ---------- */
+/* Staggered entrances (classes added by fun.js) */
+.reveal.reveal-flip { transform: perspective(900px) rotateX(16deg) translateY(50px); transform-origin: 50% 100%; }
+.reveal.reveal-pop { transform: scale(.82); }
+.reveal.reveal-swing { transform: translateY(50px) rotate(-2deg) scale(.94); transform-origin: 50% 50%; }
+.reveal.reveal-right { transform: translateX(40px); }
+.reveal.reveal-left { transform: translateX(-40px); }
+.reveal.reveal-flip, .reveal.reveal-pop, .reveal.reveal-swing, .reveal.reveal-right, .reveal.reveal-left {
+  transition-delay: calc(var(--i, 0) * 110ms);
+}
+.reveal.visible.reveal-flip, .reveal.visible.reveal-pop, .reveal.visible.reveal-swing,
+.reveal.visible.reveal-right, .reveal.visible.reveal-left { transform: none; }
+.reveal.visible.course-card:hover { transform: translateY(-8px); }
+.course-card.reveal-flip.visible .cc-icon { animation: iconPop .7s cubic-bezier(.34, 1.56, .64, 1) calc(var(--stagger, 0) * 110ms + .3s) both; }
+@keyframes iconPop { from { transform: scale(0) rotate(-40deg); } to { transform: none; } }
+
+/* Entrance transforms must never cause sideways scrolling on phones */
+html, body { overflow-x: clip; }
+
+/* Science lines drawn by scrolling */
+.section { position: relative; }
+.section > .container { position: relative; z-index: 1; }
+.sci-divider { --c: var(--primary); position: relative; height: 64px; margin: -46px 0 34px; }
+.sci-divider svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.sd-ghost { fill: none; stroke: var(--c); stroke-opacity: .18; stroke-width: 2; stroke-dasharray: 2 7; stroke-linecap: round; }
+.sd-line { fill: none; stroke: var(--c); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.sd-ring { fill: none; stroke: var(--c); stroke-width: 2.5; opacity: 0; transform-box: fill-box; transform-origin: center; transform: scale(.3); transition: opacity .35s, transform .45s cubic-bezier(.34, 1.56, .64, 1); }
+.sd-ring.on { opacity: 1; transform: none; }
+.sd-dot { fill: #fff; stroke: var(--c); stroke-width: 3; opacity: 0; filter: drop-shadow(0 0 5px var(--c)); }
+.sd-label {
+  position: absolute; right: 0; top: -24px; color: var(--c); font: 700 22px "Caveat", cursive;
+  opacity: 0; transform: translateY(8px) rotate(-3deg); transition: opacity .5s, transform .5s;
+}
+.sd-label.show { opacity: 1; transform: rotate(-3deg); }
+
+/* Doodles that drift and turn with the scroll (wide screens only) */
+.sec-doodles { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+.sd-item { position: absolute; display: grid; place-items: center; opacity: .16; will-change: transform; }
+.sd-item svg {
+  width: 100%; height: 100%; overflow: visible;
+  fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round;
+}
+.sd-item .fill { fill: currentColor; stroke: none; }
+.sd-text { font: 700 1em/1 "Caveat", cursive; }
+@media (max-width: 1199px) { .sec-doodles { display: none; } }
+
+/* Test-tube scroll meter */
+.tube-meter {
+  position: fixed; right: 22px; top: 50%; z-index: 40; display: none; flex-direction: column; align-items: center;
+  opacity: 0; transform: translateY(-50%); transition: opacity .4s; pointer-events: none;
+}
+@media (min-width: 1320px) { .tube-meter { display: flex; } }
+.tube-meter.show { opacity: 1; }
+.tube-meter::before { content: ""; position: relative; z-index: 1; width: 34px; height: 7px; margin-bottom: -2px; border-radius: 4px; background: #a5b4fc; }
+.tube {
+  position: relative; width: 24px; height: 160px; overflow: hidden;
+  border: 2.5px solid #a5b4fc; border-top: 0; border-radius: 0 0 14px 14px;
+  background: rgba(255, 255, 255, .75); box-shadow: 0 8px 20px rgba(79, 70, 229, .15);
+}
+.tube-liquid {
+  --h: 262; position: absolute; inset: 0; clip-path: inset(100% 0 0 0);
+  background: linear-gradient(180deg, hsl(var(--h) 90% 82%), hsl(var(--h) 78% 58%) 40%, hsl(var(--h) 72% 46%));
+}
+.tube-liquid i {
+  position: absolute; bottom: 6px; width: 5px; height: 5px; border-radius: 50%;
+  background: rgba(255, 255, 255, .8); animation: tubeBubble 2.6s ease-in infinite;
+}
+.tube-liquid i:nth-child(1) { left: 4px; }
+.tube-liquid i:nth-child(2) { left: 12px; width: 4px; height: 4px; animation-delay: .7s; }
+.tube-liquid i:nth-child(3) { left: 7px; animation-delay: 1.3s; }
+.tube-liquid i:nth-child(4) { left: 14px; width: 3px; height: 3px; animation-delay: 1.9s; }
+@keyframes tubeBubble { 0% { transform: translateY(0); opacity: 0; } 15% { opacity: 1; } 100% { transform: translateY(-150px); opacity: 0; } }
+.tube-label { margin-top: 8px; padding: 0 7px; border-radius: 8px; background: rgba(255, 255, 255, .9); color: var(--primary); font: 700 18px "Caveat", cursive; box-shadow: 0 2px 8px rgba(15, 23, 42, .12); }
+
 /* Pause decorative animations while their section is off screen */
 .is-paused, .is-paused * { animation-play-state: paused !important; }
 
@@ -402,19 +476,23 @@
   .facts-label { padding: 12px 14px; font-size: 14px; }
   .facts-track li { padding: 12px 22px; }
   .rocket-top { left: 16px; bottom: 16px; width: 48px; height: 48px; font-size: 18px; }
+  .sci-divider { height: 48px; margin: -34px 0 26px; }
+  .sd-label { top: -20px; font-size: 19px; }
 }
 
 /* ---------- Respect reduced-motion preferences ---------- */
 @media (prefers-reduced-motion: reduce) {
   .doodle svg, .formula, .orbit, .oi, .float-card, .plane, .plane i, .facts-track, .cmp-arm, .cmp-circle,
   .badge i, .hero-actions .btn-primary::after, .chip:hover i, .owl-eyes, .board-hint i, .pr-knob, .typer-caret,
-  .facts-label i, .doodle .needle, .chat-fab::before, .photo-tag {
+  .facts-label i, .doodle .needle, .chat-fab::before, .photo-tag, .tube-liquid i, .cc-icon {
     animation: none !important;
+  }
+  .reveal, .reveal.reveal-flip, .reveal.reveal-pop, .reveal.reveal-swing, .reveal.reveal-right, .reveal.reveal-left {
+    opacity: 1 !important; transform: none !important; transition: none !important;
   }
   .cmp-circle { stroke-dashoffset: 0; }
   .plane-track { display: none; }
   .facts-window { overflow-x: auto; -webkit-mask-image: none; mask-image: none; }
-  .reveal { opacity: 1; transform: none; transition: none; }
   .reveal .section-title::after { transform: none; transition: none; }
   html { scroll-behavior: auto; }
 }

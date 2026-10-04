@@ -90,6 +90,7 @@
   const ppPencil = $("ppPencil");
   const rocket = $("rocketTop");
   let scrollQueued = false;
+  const scrollHooks = []; // more scroll-driven effects register here (see bottom of file)
   const updateScrollFx = () => {
     scrollQueued = false;
     const max = document.documentElement.scrollHeight - window.innerHeight;
@@ -99,6 +100,7 @@
     ppPencil.style.transform = `translateX(${p * ppLine.offsetWidth - 32.6}px)`;
     ppPencil.style.opacity = p > 0.003 ? "1" : "0";
     if (!rocket.classList.contains("launch")) rocket.classList.toggle("show", window.scrollY > 700);
+    scrollHooks.forEach((fn) => fn(p));
   };
   const queueScrollFx = () => {
     if (!scrollQueued) {
@@ -362,7 +364,8 @@
     { key: "cs", tab: "Comp Sci", tag: "💻 Computer Science" },
   ];
   const TEASERS = [
-    { s: "maths", q: "If 3 pencils cost ₹15, how much do 7 pencils cost?", o: ["₹21", "₹30", "₹35", "₹45"], a: 2, why: "One pencil costs ₹15 ÷ 3 = ₹5, so 7 pencils cost 7 × ₹5 = ₹35." },
+    { s: "maths", q: "If 2x + 5 = 17, what is x?", o: ["5", "6", "7", "11"], a: 1, why: "Subtract 5 from both sides: 2x = 12, then divide by 2: x = 6." },
+    { s: "maths", q: "What is the value of sin 30°?", o: ["0", "1/2", "√3/2", "1"], a: 1, why: "sin 30° = 1/2 — one of the standard angles worth remembering for board exams." },
     { s: "maths", q: "What comes next? 2, 4, 8, 16, …", o: ["24", "30", "32", "64"], a: 2, why: "Each number doubles: 16 × 2 = 32." },
     { s: "maths", q: "I'm an odd number. Take away one letter and I become even. What am I?", o: ["Three", "Five", "Seven", "Nine"], a: 2, why: "Take the S away from SEVEN and you get EVEN!" },
     { s: "maths", q: "The three angles of a triangle always add up to…", o: ["90°", "180°", "270°", "360°"], a: 1, why: "Every triangle's angles add up to 180° — try it with the protractor!" },
@@ -370,15 +373,18 @@
     { s: "maths", q: "What is the square root of 144?", o: ["11", "12", "14", "72"], a: 1, why: "12 × 12 = 144." },
     { s: "physics", q: "What is the SI unit of force?", o: ["Joule", "Watt", "Newton", "Pascal"], a: 2, why: "1 newton is the force that gives a 1 kg mass an acceleration of 1 m/s²." },
     { s: "physics", q: "A bus travels 120 km in 2 hours. What is its average speed?", o: ["40 km/h", "60 km/h", "120 km/h", "240 km/h"], a: 1, why: "Speed = distance ÷ time = 120 km ÷ 2 h = 60 km/h." },
+    { s: "physics", q: "A 2 Ω resistor carries a current of 3 A. What is the voltage across it?", o: ["1.5 V", "5 V", "6 V", "9 V"], a: 2, why: "Ohm's law: V = I × R = 3 A × 2 Ω = 6 V." },
     { s: "physics", q: "Which colour of visible light has the longest wavelength?", o: ["Violet", "Blue", "Green", "Red"], a: 3, why: "Red light has the longest wavelength (about 700 nm); violet has the shortest." },
     { s: "physics", q: "Light travels fastest through…", o: ["Water", "Glass", "Air", "A vacuum"], a: 3, why: "In a vacuum light moves at about 3 × 10⁸ m/s — any material slows it down." },
     { s: "chemistry", q: "What is the chemical formula of water?", o: ["HO₂", "H₂O", "H₂O₂", "OH"], a: 1, why: "Two hydrogen atoms joined to one oxygen atom. (H₂O₂ is hydrogen peroxide!)" },
     { s: "chemistry", q: "What is the pH of pure water at 25 °C?", o: ["0", "7", "10", "14"], a: 1, why: "Pure water is neutral: below 7 is acidic, above 7 is basic." },
     { s: "chemistry", q: "Which element has the symbol Na?", o: ["Nitrogen", "Neon", "Sodium", "Nickel"], a: 2, why: "Na comes from sodium's Latin name, natrium." },
+    { s: "chemistry", q: "Avogadro's number is approximately…", o: ["3.0 × 10⁸", "6.022 × 10²³", "9.8", "1.6 × 10⁻¹⁹"], a: 1, why: "One mole of any substance contains about 6.022 × 10²³ particles." },
     { s: "chemistry", q: "How many elements are in the modern periodic table?", o: ["100", "108", "118", "128"], a: 2, why: "118 elements have been discovered and named so far." },
     { s: "biology", q: "Which part of the cell is called its “powerhouse”?", o: ["Nucleus", "Ribosome", "Mitochondria", "Cell wall"], a: 2, why: "Mitochondria release energy from food through cellular respiration." },
     { s: "biology", q: "Which gas do plants take in to make their food?", o: ["Oxygen", "Nitrogen", "Carbon dioxide", "Helium"], a: 2, why: "Plants use carbon dioxide, water and sunlight in photosynthesis." },
     { s: "biology", q: "How many chambers does the human heart have?", o: ["2", "3", "4", "5"], a: 2, why: "Two atria on top and two ventricles below." },
+    { s: "biology", q: "Which blood cells help the body fight infections?", o: ["Red blood cells", "White blood cells", "Platelets", "Plasma"], a: 1, why: "White blood cells (leucocytes) attack germs and help defend the body." },
     { s: "biology", q: "What is the largest organ of the human body?", o: ["Liver", "Brain", "Skin", "Lungs"], a: 2, why: "Your skin! In adults it covers about 1.5–2 square metres." },
     { s: "cs", q: "What is the binary number 1010 in decimal?", o: ["8", "10", "12", "1010"], a: 1, why: "1010₂ = 8 + 0 + 2 + 0 = 10. Try it on the Binary Lights board!" },
     { s: "cs", q: "How many bits make one byte?", o: ["4", "8", "16", "32"], a: 1, why: "1 byte = 8 bits — enough for 256 different values." },
@@ -598,4 +604,254 @@
     setTickerSpeed();
     document.fonts?.ready.then(setTickerSpeed);
   }
+  // =========================================================
+  // Scroll-driven fun
+  // =========================================================
+  const clamp01 = (v) => Math.min(1, Math.max(0, v));
+  const svgEl = (tag, attrs = {}) => {
+    const el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+    Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
+    return el;
+  };
+
+  // ---------- Staggered entrances: cards flip, pop and swing in ----------
+  const funRevealer = new IntersectionObserver(
+    (entries) =>
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        e.target.classList.add("visible");
+        funRevealer.unobserve(e.target);
+      }),
+    { threshold: 0.15 }
+  );
+  const stagger = (selector, effect, perRow) => {
+    document.querySelectorAll(selector).forEach((el, i) => {
+      el.style.setProperty("--i", i % perRow);
+      el.style.setProperty("--stagger", i % perRow);
+      el.classList.add(effect);
+      if (!el.classList.contains("reveal")) {
+        el.classList.add("reveal");
+        funRevealer.observe(el);
+      }
+    });
+  };
+  if (!reduceMotion) {
+    stagger(".course-card", "reveal-flip", 3);
+    stagger(".why", "reveal-pop", 3);
+    stagger(".fun-grid .board", "reveal-swing", 2);
+    stagger(".loc-info .info-item", "reveal-right", 6);
+    stagger(".contact-quick .quick", "reveal-left", 4);
+    // Once an element has arrived, drop its stagger delay so hover effects stay snappy
+    document.addEventListener("transitionend", (e) => {
+      const el = e.target;
+      if (e.propertyName === "opacity" && el.classList.contains("visible") && el.style.getPropertyValue("--i")) {
+        el.style.setProperty("--i", "0");
+      }
+    });
+  }
+
+  // ---------- Science lines that draw themselves as you scroll ----------
+  const DIVIDER_COLORS = { sine: "#4f46e5", benzene: "#16a34a", ecg: "#db2777", circuit: "#0284c7" };
+  const benzeneCentres = (w, h) => {
+    const out = [];
+    for (let cx = 75; cx + h * 0.36 <= w - 20; cx += 150) out.push(cx);
+    return out;
+  };
+  const dividerPath = (kind, w, h) => {
+    const mid = h / 2;
+    const f = (n) => n.toFixed(1);
+    let d = `M0 ${f(mid)}`;
+    if (kind === "sine") {
+      const amp = h * 0.32;
+      for (let x = 3; x <= w; x += 3) d += `L${x} ${f(mid - amp * Math.sin((x / 180) * 2 * Math.PI))}`;
+      return d;
+    }
+    if (kind === "ecg") {
+      const beat = [[60, 0], [72, -0.1], [84, 0], [96, 0], [102, 0.12], [112, -0.42], [122, 0.32], [130, 0], [148, 0], [162, -0.14], [178, 0], [200, 0]];
+      for (let x0 = 0; x0 + 200 <= w; x0 += 200) beat.forEach(([dx, dy]) => (d += `L${x0 + dx} ${f(mid + dy * h)}`));
+      return d + `L${w} ${f(mid)}`;
+    }
+    if (kind === "benzene") {
+      // Keep it one continuous stroke: dash-based drawing restarts at every "M"
+      const r = h * 0.36;
+      const k = r * 0.866;
+      for (const cx of benzeneCentres(w, h)) {
+        const top = `L${f(cx - r / 2)} ${f(mid - k)}L${f(cx + r / 2)} ${f(mid - k)}L${f(cx + r)} ${f(mid)}`;
+        d += `L${f(cx - r)} ${f(mid)}${top}L${f(cx + r / 2)} ${f(mid + k)}L${f(cx - r / 2)} ${f(mid + k)}L${f(cx - r)} ${f(mid)}${top}`;
+      }
+      return d + `L${w} ${f(mid)}`;
+    }
+    // circuit: a trace with steps and a resistor zig-zag
+    const a = h * 0.28;
+    for (let x = 0; x + 160 <= w; x += 160) {
+      d += `H${x + 40}V${f(mid - a)}H${x + 70}V${f(mid + a)}H${x + 100}V${f(mid)}H${x + 110}`;
+      [115, 122, 129, 136, 143].forEach((dx, i) => (d += `L${x + dx} ${f(mid + (i % 2 ? a : -a) * 0.6)}`));
+      d += `L${x + 150} ${f(mid)}H${x + 160}`;
+    }
+    return d + `H${w}`;
+  };
+
+  const dividers = [...document.querySelectorAll(".sci-divider")].map((host) => {
+    host.style.setProperty("--c", DIVIDER_COLORS[host.dataset.kind]);
+    const svg = svgEl("svg", { focusable: "false" });
+    const ghost = svgEl("path", { class: "sd-ghost" });
+    const line = svgEl("path", { class: "sd-line" });
+    const dot = svgEl("circle", { class: "sd-dot", r: 5 });
+    svg.append(ghost, line, dot);
+    const label = document.createElement("span");
+    label.className = "sd-label";
+    label.textContent = host.dataset.label;
+    host.append(svg, label);
+    return { host, kind: host.dataset.kind, svg, ghost, line, dot, label, rings: [], w: 0, h: 0, len: 0, p: -1 };
+  });
+  const layoutDivider = (dv) => {
+    const w = Math.round(dv.host.clientWidth);
+    const h = Math.round(dv.host.clientHeight);
+    if (!w || !h || (w === dv.w && h === dv.h)) return;
+    dv.w = w;
+    dv.h = h;
+    dv.svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
+    const path = dividerPath(dv.kind, w, h);
+    dv.ghost.setAttribute("d", path);
+    dv.line.setAttribute("d", path);
+    dv.len = dv.line.getTotalLength();
+    dv.line.style.strokeDasharray = `${dv.len}`;
+    dv.p = -1;
+    if (dv.kind === "benzene") {
+      // Aromatic inner rings pop in as the drawing dot passes each hexagon
+      dv.rings.forEach((c) => c.remove());
+      dv.rings = benzeneCentres(w, h).map((cx) => {
+        const c = svgEl("circle", { class: "sd-ring", cx, cy: (h / 2).toFixed(1), r: (h * 0.2).toFixed(1) });
+        dv.line.after(c);
+        return c;
+      });
+    }
+  };
+  const drawDivider = (dv, top, vh) => {
+    // 0 when the line enters at the bottom of the screen, 1 once it reaches 40% from the top
+    const p = reduceMotion ? 1 : clamp01((vh - top) / (vh * 0.6));
+    if (Math.abs(p - dv.p) < 0.001) return;
+    dv.p = p;
+    dv.line.style.strokeDashoffset = `${dv.len * (1 - p)}`;
+    const pt = dv.line.getPointAtLength(dv.len * p);
+    dv.dot.setAttribute("cx", pt.x.toFixed(1));
+    dv.dot.setAttribute("cy", pt.y.toFixed(1));
+    dv.dot.style.opacity = p > 0 ? "1" : "0";
+    dv.rings.forEach((c) => c.classList.toggle("on", pt.x >= +c.getAttribute("cx") + 4));
+    dv.label.classList.toggle("show", p > 0.97);
+  };
+  dividers.forEach(layoutDivider);
+
+  // ---------- Section doodles that drift and turn with the scroll ----------
+  const gear = (teeth, R = 28, r = 22) => {
+    const step = (Math.PI * 2) / teeth;
+    let d = "";
+    for (let i = 0; i < teeth; i++) {
+      const a = i * step;
+      [[r, a], [R, a + step * 0.15], [R, a + step * 0.45], [r, a + step * 0.6]].forEach(([rad, ang], j) => {
+        d += `${i === 0 && j === 0 ? "M" : "L"}${(32 + rad * Math.cos(ang)).toFixed(1)} ${(32 + rad * Math.sin(ang)).toFixed(1)}`;
+      });
+    }
+    return `<path d="${d}Z"/><circle cx="32" cy="32" r="8"/>`;
+  };
+  const DOODLE = {
+    atom: '<ellipse cx="32" cy="32" rx="27" ry="10"/><ellipse cx="32" cy="32" rx="27" ry="10" transform="rotate(60 32 32)"/><ellipse cx="32" cy="32" rx="27" ry="10" transform="rotate(120 32 32)"/><circle cx="32" cy="32" r="4" class="fill"/>',
+    flask: '<path d="M24 6h16M27 6v18L12 52a4 4 0 0 0 3.6 6h32.8a4 4 0 0 0 3.6-6L37 24V6"/><path d="M17 44h30"/>',
+    dna: '<path d="M20 4c0 14 24 14 24 28S20 46 20 60"/><path d="M44 4c0 14-24 14-24 28s24 14 24 28"/><path d="M23 11h18M23 25h18M23 39h18M23 53h18"/>',
+    magnet: '<path d="M14 8v24a18 18 0 0 0 36 0V8H40v24a8 8 0 0 1-16 0V8z"/><path d="M14 16h10M40 16h10"/>',
+    compass: '<circle cx="32" cy="32" r="27"/><path d="M32 7 38 32 32 57 26 32Z"/><path d="M32 7 38 32H26Z" class="fill"/><path d="M5 32h6M53 32h6M32 1v4"/>',
+    globe: '<circle cx="32" cy="28" r="20"/><path d="M12 28h40M32 8c8 8 8 32 0 40M32 8c-8 8-8 32 0 40"/><path d="M32 48v8M22 58h20"/>',
+    gearBig: gear(12),
+    gearSmall: gear(9),
+  };
+  // speed: px of drift per px of scroll; spin: degrees per px of scroll
+  const SECTION_DOODLES = {
+    courses: [
+      { k: "atom", x: "1.5%", y: "16%", s: 92, speed: 0.12, spin: 0.25 },
+      { t: "π", x: "94.5%", y: "12%", s: 70, speed: -0.1, spin: -0.04 },
+      { k: "flask", x: "95%", y: "60%", s: 70, speed: 0.18, spin: 0.05, c: "#16a34a" },
+      { t: "x²", x: "2.5%", y: "72%", s: 54, speed: -0.15, spin: 0.06, c: "#db2777" },
+    ],
+    why: [
+      { k: "gearBig", x: "1.5%", y: "34%", s: 96, speed: 0.08, spin: 0.3 },
+      { k: "gearSmall", x: "calc(1.5% + 68px)", y: "calc(34% + 47px)", s: 70, speed: 0.08, spin: -0.4 },
+      { k: "magnet", x: "94%", y: "22%", s: 64, speed: -0.12, spin: 0.1, c: "#db2777" },
+      { k: "dna", x: "95%", y: "66%", s: 72, speed: 0.15, spin: 0.03, c: "#0284c7" },
+    ],
+    location: [
+      { k: "compass", x: "1.5%", y: "24%", s: 96, speed: 0.1, spin: 0.4, c: "#f59e0b" },
+      { k: "globe", x: "94%", y: "58%", s: 80, speed: -0.12, spin: 0 },
+    ],
+  };
+  const sectionDoodles = Object.entries(SECTION_DOODLES).flatMap(([id, items]) => {
+    const section = document.getElementById(id);
+    if (!section) return [];
+    const layer = document.createElement("div");
+    layer.className = "sec-doodles";
+    layer.setAttribute("aria-hidden", "true");
+    const els = items.map((it) => {
+      const el = document.createElement("div");
+      el.className = it.t ? "sd-item sd-text" : "sd-item";
+      el.style.cssText = `left:${it.x};top:${it.y};width:${it.s}px;height:${it.s}px;color:${it.c || "var(--primary)"}`;
+      if (it.t) {
+        el.textContent = it.t;
+        el.style.fontSize = `${it.s * 0.8}px`;
+      } else {
+        el.innerHTML = `<svg viewBox="0 0 64 64">${DOODLE[it.k]}</svg>`;
+      }
+      layer.appendChild(el);
+      return { el, speed: it.speed, spin: it.spin };
+    });
+    section.prepend(layer);
+    return [{ section, items: els }];
+  });
+
+  // ---------- Test-tube meter that fills (and changes colour) as you scroll ----------
+  const tubeMeter = $("tubeMeter");
+  const tubeLiquid = $("tubeLiquid");
+  const tubeLabel = $("tubeLabel");
+  const heroVisual = hero.querySelector(".hero-visual");
+
+  scrollHooks.push((p) => {
+    const vh = window.innerHeight;
+    const y = window.scrollY;
+    // Read everything first…
+    const dividerTops = dividers.map((dv) => dv.host.getBoundingClientRect().top);
+    const sectionRects = sectionDoodles.map((sd) => sd.section.getBoundingClientRect());
+    const heroH = hero.offsetHeight;
+    // …then write
+    dividers.forEach((dv, i) => drawDivider(dv, dividerTops[i], vh));
+    tubeLiquid.style.clipPath = `inset(${((1 - p) * 100).toFixed(2)}% 0 0 0)`;
+    tubeLiquid.style.setProperty("--h", Math.round(262 - p * 222)); // purple → blue → green → amber
+    tubeLabel.textContent = `${Math.round(p * 100)}%`;
+    tubeMeter.classList.toggle("show", y > 200);
+    if (reduceMotion) return;
+    sectionDoodles.forEach((sd, i) => {
+      const r = sectionRects[i];
+      if (r.bottom < -100 || r.top > vh + 100) return;
+      const d = r.top + r.height / 2 - vh / 2;
+      sd.items.forEach(({ el, speed, spin }) => {
+        el.style.transform = `translate3d(0, ${(-d * speed).toFixed(1)}px, 0) rotate(${(-d * spin).toFixed(1)}deg)`;
+      });
+    });
+    // Hero depth: doodles lag behind, the card floats up a little faster
+    if (y < heroH) {
+      doodles.style.translate = `0 ${(y * 0.35).toFixed(1)}px`;
+      heroVisual.style.translate = `0 ${(y * -0.06).toFixed(1)}px`;
+    }
+  });
+
+  let relayoutTimer;
+  window.addEventListener("resize", () => {
+    clearTimeout(relayoutTimer);
+    relayoutTimer = setTimeout(() => {
+      dividers.forEach(layoutDivider);
+      queueScrollFx();
+    }, 150);
+  });
+  document.fonts?.ready.then(() => {
+    dividers.forEach(layoutDivider);
+    queueScrollFx();
+  });
+  queueScrollFx();
 })();
