@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Anjaly Tution Centre | Maths, Physics, Chemistry, Biology &amp; Computer Science Tuition</title>
+  <meta name="description" content="Anjaly Tution Centre – expert tuition in Mathematics, Science, Physics, Chemistry, Biology and Computer Science for Primary to Higher Secondary (+1, +2) students. Enquire via call or WhatsApp." />
+  <meta name="theme-color" content="#4f46e5" />
+  <link rel="icon" href="favicon.ico" sizes="32x32" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <link rel="manifest" href="site.webmanifest" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=Caveat:wght@500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="fun.css" />
+</head>
+<body>
+
+  <!-- ===== Header ===== -->
+  <header class="header" id="header">
+    <div class="container nav">
+      <a href="#home" class="logo">
+        <span class="logo-mark"><i class="fa-solid fa-graduation-cap"></i></span>
+        <span class="logo-text">Anjaly<small>Tution Centre</small></span>
+      </a>
+      <nav class="nav-links" id="navLinks">
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#courses">Subjects</a>
+        <a href="#why">Why Us</a>
+        <a href="#fun">Fun Zone</a>
+        <a href="#location">Location</a>
+        <a href="#contact">Contact</a>
+        <button class="btn btn-primary nav-cta" data-open-enquiry>Enquire Now</button>
+      </nav>
+      <button class="menu-toggle" id="menuToggle" aria-label="Open menu"><i class="fa-solid fa-bars"></i></button>
+    </div>
+    <!-- Scroll progress: a pencil that draws a line as you scroll -->
+    <div class="pencil-progress" aria-hidden="true">
+      <div class="pp-line" id="ppLine"></div>
+      <svg class="pp-pencil" id="ppPencil" viewBox="0 0 48 14">
+        <rect x="0" y="2" width="8" height="10" rx="2" fill="#f472b6" />
+        <rect x="8" y="2" width="4" height="10" fill="#cbd5e1" />
+        <rect x="12" y="2" width="24" height="10" fill="#fbbf24" />
+        <path d="M12 7h24" stroke="#f59e0b" stroke-width="1.2" />
+        <path d="M36 2 46 7 36 12Z" fill="#fde7c4" />
+        <path d="M43 5.5 46 7 43 8.5Z" fill="#334155" />
+      </svg>
+    </div>
+  </header>
+
+  <!-- ===== Hero ===== -->
+  <section class="hero" id="home">
+    <div class="hero-bg"></div>
+
+    <!-- Floating education doodles (decorative) -->
+    <div class="hero-doodles" aria-hidden="true">
+      <div class="doodle" style="--x:3%;--y:16%;--s:78px;--r:-18deg;--d:30;--delay:-1s">
+        <svg viewBox="0 0 64 64"><rect x="4" y="22" width="56" height="20" rx="3"/><path d="M12 22v7M20 22v11M28 22v7M36 22v11M44 22v7M52 22v11"/></svg>
+      </div>
+      <div class="doodle" style="--x:42%;--y:14%;--s:56px;--r:20deg;--d:18;--delay:-3s">
+        <svg viewBox="0 0 64 64"><path d="M44 8l12 12-32 32H12V40z"/><path d="M38 14l12 12M12 40l12 12"/></svg>
+      </div>
+      <div class="doodle" style="--x:7%;--y:78%;--s:84px;--r:8deg;--d:24;--delay:-5s">
+        <svg viewBox="0 0 64 64"><path d="M6 46a26 26 0 0 1 52 0z"/><path d="M14 46a18 18 0 0 1 36 0"/><path d="M32 20v4M13.6 27.6l2.8 2.8M50.4 27.6l-2.8 2.8M8 42h4M52 42h4"/><path d="M32 46l13-17" class="needle"/></svg>
+      </div>
+      <div class="doodle hide-sm" style="--x:47%;--y:84%;--s:62px;--r:0deg;--d:36;--delay:-2s">
+        <svg viewBox="0 0 64 64" class="spin-slow"><ellipse cx="32" cy="32" rx="27" ry="10"/><ellipse cx="32" cy="32" rx="27" ry="10" transform="rotate(60 32 32)"/><ellipse cx="32" cy="32" rx="27" ry="10" transform="rotate(120 32 32)"/><circle cx="32" cy="32" r="4" class="fill"/><circle cx="59" cy="32" r="2.6" class="fill"/></svg>
+      </div>
+      <div class="doodle" style="--x:90%;--y:12%;--s:58px;--r:12deg;--d:22;--delay:-4s">
+        <svg viewBox="0 0 64 64" class="glow"><path d="M24 6h16M27 6v18L12 52a4 4 0 0 0 3.6 6h32.8a4 4 0 0 0 3.6-6L37 24V6"/><path d="M17 44h30"/><circle cx="27" cy="51" r="2.2" class="fill"/><circle cx="36" cy="48" r="1.6" class="fill"/></svg>
+      </div>
+      <div class="doodle hide-sm" style="--x:93%;--y:70%;--s:66px;--r:-10deg;--d:28;--delay:-6s">
+        <svg viewBox="0 0 64 64"><path d="M20 4c0 14 24 14 24 28S20 46 20 60"/><path d="M44 4c0 14-24 14-24 28s24 14 24 28"/><path d="M23 11h18M23 25h18M23 39h18M23 53h18"/></svg>
+      </div>
+      <div class="doodle hide-sm" style="--x:29%;--y:90%;--s:54px;--r:0deg;--d:16;--delay:-2.5s">
+        <svg viewBox="0 0 64 64"><path d="M22 18 8 32l14 14M42 18l14 14-14 14M37 12 27 52"/></svg>
+      </div>
+      <!-- Compass that keeps drawing a circle -->
+      <div class="doodle doodle-compass" style="--x:55%;--y:13%;--s:110px;--r:0deg;--d:14;--delay:0s">
+        <svg viewBox="-70 -70 140 140">
+          <circle r="50" class="cmp-guide" />
+          <circle r="50" class="cmp-circle" pathLength="100" />
+          <g class="cmp-arm">
+            <path d="M0 0 23 -50M27 -50 50 0" />
+            <path d="M25 -50v-13" />
+            <circle cx="25" cy="-51" r="4" class="fill" />
+            <path d="M47 -6 50 0 53 -6" class="fill" />
+          </g>
+          <circle r="2.5" class="fill" />
+        </svg>
+      </div>
+      <span class="formula" style="--x:22%;--y:10%;--d:20;--delay:-1s">a² + b² = c²</span>
+      <span class="formula" style="--x:34%;--y:74%;--d:26;--delay:-4s">E = mc²</span>
+      <span class="formula hide-sm" style="--x:78%;--y:88%;--d:14;--delay:-2s">π ≈ 3.14</span>
+      <span class="formula" style="--x:82%;--y:14%;--d:32;--delay:-3s">H₂O</span>
+      <span class="formula hide-sm" style="--x:2%;--y:50%;--d:24;--delay:-6s">√49 = 7</span>
+      <span class="formula hide-sm" style="--x:52%;--y:46%;--d:12;--delay:-5s">∑</span>
+      <span class="formula hide-sm" style="--x:64%;--y:93%;--d:22;--delay:-3.5s">1010₂ = 10</span>
+      <span class="formula hide-sm" style="--x:14%;--y:93%;--d:16;--delay:-6.5s">NaCl</span>
+      <span class="formula" style="--x:92%;--y:44%;--d:18;--delay:-7s">F = ma</span>
+    </div>
+
+    <div class="container hero-grid">
+      <div class="hero-content">
+        <span class="badge"><i class="fa-solid fa-star"></i> Admissions Open 2026–27</span>
+        <h1>Excel in Maths &amp; Science at <span class="highlight">Anjaly Tution Centre</span></h1>
+        <p class="typer" aria-hidden="true">We make <span class="typer-word" id="typerWord">Maths easy 🧮</span><span class="typer-caret"></span></p>
+        <p class="sr-only">We make Maths easy, Physics fun, Chemistry click, Biology come alive and Computer Science simple.</p>
+        <p class="lead">Expert coaching in Mathematics, Physics, Chemistry, Biology and Computer Science — clear concepts, plenty of practice and exam-focused preparation from Primary to Higher Secondary (+1, +2).</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary btn-lg" data-open-enquiry><i class="fa-solid fa-paper-plane"></i> Enquire Now</button>
+          <a class="btn btn-whatsapp btn-lg" data-whatsapp href="#"><i class="fa-brands fa-whatsapp"></i> Chat with Us</a>
+        </div>
+        <div class="subject-chips">
+          <button class="chip c1" data-open-enquiry data-subject="Mathematics"><i class="fa-solid fa-square-root-variable"></i> Maths</button>
+          <button class="chip c5" data-open-enquiry data-subject="Physics"><i class="fa-solid fa-atom"></i> Physics</button>
+          <button class="chip c3" data-open-enquiry data-subject="Chemistry"><i class="fa-solid fa-flask"></i> Chemistry</button>
+          <button class="chip c4" data-open-enquiry data-subject="Biology"><i class="fa-solid fa-dna"></i> Biology</button>
+          <button class="chip c6" data-open-enquiry data-subject="Computer Science"><i class="fa-solid fa-laptop-code"></i> Computer Science</button>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <!-- Subjects orbiting the main card like planets -->
+        <div class="orbit" aria-hidden="true">
+          <span class="orbit-item" style="--a:0deg"><span class="oi c1"><i class="fa-solid fa-square-root-variable"></i></span></span>
+          <span class="orbit-item" style="--a:72deg"><span class="oi c3"><i class="fa-solid fa-flask"></i></span></span>
+          <span class="orbit-item" style="--a:144deg"><span class="oi c6"><i class="fa-solid fa-laptop-code"></i></span></span>
+          <span class="orbit-item" style="--a:216deg"><span class="oi c5"><i class="fa-solid fa-atom"></i></span></span>
+          <span class="orbit-item" style="--a:288deg"><span class="oi c4"><i class="fa-solid fa-dna"></i></span></span>
+        </div>
+        <div class="hero-card main-card">
+          <div class="card-icon"><i class="fa-solid fa-atom"></i></div>
+          <h3>Learn. Practice. Excel.</h3>
+          <p>Concept-based Maths, Science &amp; Computer Science with doubt-clearing after every class.</p>
+        </div>
+        <div class="hero-card float-card fc-1"><i class="fa-solid fa-chalkboard-user"></i> Subject Experts</div>
+        <div class="hero-card float-card fc-2"><i class="fa-solid fa-trophy"></i> Board Exam Ready</div>
+        <div class="hero-card float-card fc-3"><i class="fa-solid fa-users"></i> Small Batches</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== About ===== -->
+  <section class="section" id="about">
+    <div class="container about-grid">
+      <div class="about-photo">
+        <img src="PHOTO-2026-10-04-13-47-05.jpg" alt="Teacher at Anjaly Tution Centre" loading="lazy" />
+        <div class="photo-tag">
+          <span class="logo-mark sm"><i class="fa-solid fa-heart"></i></span>
+          <div><strong>Where learning meets care</strong><small>Anjaly Tution Centre</small></div>
+        </div>
+      </div>
+      <div>
+        <span class="eyebrow">About Us</span>
+        <h2 class="section-title">Where Maths &amp; Science finally make sense</h2>
+        <p>Anjaly Tution Centre specialises in Mathematics, Physics, Chemistry, Biology and Computer Science. We teach the “why” behind every formula, reaction and program — then practise until it sticks. Every student gets personal attention, regular tests and clear progress updates for parents.</p>
+        <div class="about-features">
+          <div class="af"><i class="fa-solid fa-bullseye"></i><div><h4>Our Mission</h4><p>Turn fear of Maths and Science into confidence and curiosity.</p></div></div>
+          <div class="af"><i class="fa-solid fa-eye"></i><div><h4>Our Vision</h4><p>Strong problem-solvers ready for board exams, entrance exams and beyond.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Subjects ===== -->
+  <section class="section section-alt" id="courses">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Subjects We Teach</span>
+        <h2 class="section-title">Maths, Science &amp; Computer Science</h2>
+        <p>For students from Primary to Higher Secondary (+1, +2) — State syllabus, CBSE and ICSE.</p>
+      </div>
+      <div class="cards">
+        <article class="course-card">
+          <div class="cc-icon c1"><i class="fa-solid fa-square-root-variable"></i></div>
+          <h3>Mathematics</h3>
+          <p>Arithmetic to algebra, geometry, trigonometry and calculus — step-by-step methods and lots of solved problems.</p>
+          <ul class="topic-tags"><li>Algebra</li><li>Geometry</li><li>Calculus</li></ul>
+          <button class="link-btn" data-open-enquiry data-subject="Mathematics">Enquire <i class="fa-solid fa-arrow-right"></i></button>
+        </article>
+        <article class="course-card">
+          <div class="cc-icon c5"><i class="fa-solid fa-atom"></i></div>
+          <h3>Physics</h3>
+          <p>Motion, forces, electricity, light and modern physics explained with real-life examples and numerical practice.</p>
+          <ul class="topic-tags"><li>Mechanics</li><li>Electricity</li><li>Optics</li></ul>
+          <button class="link-btn" data-open-enquiry data-subject="Physics">Enquire <i class="fa-solid fa-arrow-right"></i></button>
+        </article>
+        <article class="course-card">
+          <div class="cc-icon c3"><i class="fa-solid fa-flask"></i></div>
+          <h3>Chemistry</h3>
+          <p>Atoms, the periodic table, reactions, organic and physical chemistry — equations and concepts made simple.</p>
+          <ul class="topic-tags"><li>Reactions</li><li>Organic</li><li>Periodic table</li></ul>
+          <button class="link-btn" data-open-enquiry data-subject="Chemistry">Enquire <i class="fa-solid fa-arrow-right"></i></button>
+        </article>
+        <article class="course-card">
+          <div class="cc-icon c4"><i class="fa-solid fa-dna"></i></div>
+          <h3>Biology</h3>
+          <p>Cells, genetics, human physiology and plant life with clear diagrams and easy memory tricks.</p>
+          <ul class="topic-tags"><li>Cells</li><li>Genetics</li><li>Physiology</li></ul>
+          <button class="link-btn" data-open-enquiry data-subject="Biology">Enquire <i class="fa-solid fa-arrow-right"></i></button>
+        </article>
+        <article class="course-card">
+          <div class="cc-icon c6"><i class="fa-solid fa-laptop-code"></i></div>
+          <h3>Computer Science</h3>
+          <p>Programming, problem-solving logic and computer fundamentals for the school and +1, +2 syllabus.</p>
+          <ul class="topic-tags"><li>Programming</li><li>Logic</li><li>Fundamentals</li></ul>
+          <button class="link-btn" data-open-enquiry data-subject="Computer Science">Enquire <i class="fa-solid fa-arrow-right"></i></button>
+        </article>
+        <article class="course-card">
+          <div class="cc-icon c2"><i class="fa-solid fa-microscope"></i></div>
+          <h3>Science (Classes 1–10)</h3>
+          <p>A strong base in physics, chemistry and biology for younger students — building curiosity and clear fundamentals.</p>
+          <ul class="topic-tags"><li>Primary</li><li>Upper Primary</li><li>High School</li></ul>
+          <button class="link-btn" data-open-enquiry data-subject="General Science">Enquire <i class="fa-solid fa-arrow-right"></i></button>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Why Us ===== -->
+  <section class="section" id="why">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Why Choose Us</span>
+        <h2 class="section-title">What makes us different</h2>
+      </div>
+      <div class="why-grid">
+        <div class="why"><i class="fa-solid fa-user-graduate"></i><h4>Subject Experts</h4><p>Teachers who know the Maths, Science and Computer Science syllabus inside out.</p></div>
+        <div class="why"><i class="fa-solid fa-people-group"></i><h4>Small Batches</h4><p>Limited students per batch for personal attention.</p></div>
+        <div class="why"><i class="fa-solid fa-clipboard-check"></i><h4>Chapter-wise Tests</h4><p>Regular tests and model exams to track and improve every score.</p></div>
+        <div class="why"><i class="fa-solid fa-calculator"></i><h4>Problem Practice</h4><p>Worksheets, numericals and solved examples for every chapter.</p></div>
+        <div class="why"><i class="fa-solid fa-lightbulb"></i><h4>Doubt Clearing</h4><p>Extra sessions so no question goes unanswered.</p></div>
+        <div class="why"><i class="fa-solid fa-comments"></i><h4>Parent Updates</h4><p>Regular progress reports, so parents always know how their child is doing.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Fun Zone ===== -->
+  <section class="section section-alt fun-zone" id="fun">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Fun Zone</span>
+        <h2 class="section-title">Maths &amp; Science are more fun when you play!</h2>
+        <p>A little taste of how we make concepts click — explore angles, crack a subject quiz, or light up a number in binary.</p>
+      </div>
+
+      <div class="fun-grid">
+        <!-- Angle explorer -->
+        <div class="board">
+          <div class="board-head">
+            <span class="chalk-title">📐 Angle Explorer <small class="board-subject">Maths</small></span>
+            <span class="board-hint"><i class="fa-solid fa-hand-pointer"></i> Drag the arm</span>
+          </div>
+          <svg class="protractor" id="protractor" viewBox="0 0 320 186" tabindex="0" role="slider"
+               aria-label="Angle" aria-valuemin="0" aria-valuemax="180" aria-valuenow="45">
+            <path class="pr-body" d="M10 170A150 150 0 0 1 310 170Z" />
+            <path class="pr-inner" d="M60 170A100 100 0 0 1 260 170" />
+            <g id="prTicks"></g>
+            <path class="pr-wedge" id="prWedge" />
+            <path class="pr-square" id="prSquare" d="M160 170v-20h20v20z" />
+            <line class="pr-base" x1="160" y1="170" x2="300" y2="170" />
+            <line class="pr-arm" id="prArm" x1="160" y1="170" x2="160" y2="30" />
+            <circle class="pr-knob-hit" id="prKnobHit" r="22" cx="160" cy="30" />
+            <circle class="pr-knob" id="prKnob" r="9" cx="160" cy="30" />
+            <circle class="pr-center" cx="160" cy="170" r="5" />
+          </svg>
+          <div class="angle-readout">
+            <span class="angle-value" id="angleValue">45°</span>
+            <span class="angle-type" id="angleType">Acute angle</span>
+          </div>
+          <p class="board-note" id="angleNote">Acute angles are smaller than 90°.</p>
+          <div class="chalk-tray" aria-hidden="true"><span></span><span></span><span></span></div>
+        </div>
+
+        <!-- Brain teaser quiz -->
+        <div class="board quiz">
+          <div class="board-head">
+            <span class="chalk-title">🧠 Subject Quiz</span>
+            <span class="score" title="Correct answers"><i class="fa-solid fa-star"></i> <b id="quizScore">0</b></span>
+          </div>
+          <div class="quiz-tabs" id="quizTabs" role="group" aria-label="Choose a subject"></div>
+          <span class="quiz-tag" id="quizTag"></span>
+          <p class="quiz-q" id="quizQ"></p>
+          <div class="quiz-opts" id="quizOpts"></div>
+          <p class="quiz-feedback" id="quizFb" aria-live="polite"></p>
+          <button class="btn btn-chalk" id="quizNext" type="button">Next puzzle <i class="fa-solid fa-arrow-right"></i></button>
+          <svg class="owl" id="owl" viewBox="0 0 120 120" aria-hidden="true">
+            <path class="owl-body" d="M20 112c-6-30 0-62 14-76l-6-20 18 12c9-4 19-4 28 0l18-12-6 20c14 14 20 46 14 76z" />
+            <ellipse class="owl-belly" cx="60" cy="88" rx="24" ry="22" />
+            <path class="owl-feather" d="M50 82q5 5 10 0q5 5 10 0M46 94q7 6 14 0q7 6 14 0" />
+            <g class="owl-eyes">
+              <circle class="owl-eye" cx="44" cy="54" r="15" />
+              <circle class="owl-eye" cx="76" cy="54" r="15" />
+              <circle class="owl-pupil" cx="44" cy="54" r="6.5" />
+              <circle class="owl-pupil" cx="76" cy="54" r="6.5" />
+              <circle class="owl-shine" cx="46" cy="51" r="2" />
+              <circle class="owl-shine" cx="78" cy="51" r="2" />
+            </g>
+            <path class="owl-beak" d="M55 64h10l-5 9z" />
+            <g class="owl-cap">
+              <path d="M60 4 92 16 60 28 28 16Z" />
+              <path d="M88 18v14" class="owl-tassel" />
+              <circle cx="88" cy="34" r="3" class="owl-tassel-end" />
+            </g>
+          </svg>
+          <div class="chalk-tray" aria-hidden="true"><span></span><span></span></div>
+        </div>
+
+        <!-- Binary lights (computer science) -->
+        <div class="board binary-board">
+          <div class="board-head">
+            <span class="chalk-title">💡 Binary Lights <small class="board-subject">Computer Science</small></span>
+            <span class="score" title="Numbers made"><i class="fa-solid fa-bolt"></i> <b id="binScore">0</b></span>
+          </div>
+          <p class="binary-goal">Computers count with just 0s and 1s. Switch on bulbs to make <b id="binTarget">25</b></p>
+          <div class="bits" id="bits" role="group" aria-label="Binary bits"></div>
+          <div class="binary-readout">
+            <span class="bin-code" id="binCode">00000000</span>
+            <span class="bin-eq">=</span>
+            <span class="bin-dec" id="binDec">0</span>
+          </div>
+          <p class="board-note" id="binNote" aria-live="polite">Each lit bulb adds its value. Add them up to reach the target!</p>
+          <button class="btn btn-chalk" id="binNew" type="button">New number <i class="fa-solid fa-shuffle"></i></button>
+          <div class="chalk-tray" aria-hidden="true"><span></span><span></span><span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Did-you-know ticker -->
+    <div class="facts">
+      <span class="facts-label"><i class="fa-solid fa-lightbulb"></i> Did you know?</span>
+      <div class="facts-window">
+        <ul class="facts-track" id="factsTrack">
+          <li>🧮 Aryabhata, born in 476 CE, calculated π as about 3.1416.</li>
+          <li>0️⃣ The idea of zero as a number was developed by Indian mathematicians.</li>
+          <li>☀️ Sunlight takes about 8 minutes 20 seconds to reach Earth.</li>
+          <li>⚡ A lightning bolt is about five times hotter than the surface of the Sun.</li>
+          <li>🌊 Sound travels about four times faster in water than in air.</li>
+          <li>💎 Diamond and pencil “lead” (graphite) are both made of pure carbon.</li>
+          <li>🎈 Helium was discovered in the Sun’s light before it was found on Earth.</li>
+          <li>🧬 Stretched out, the DNA in just one of your cells would be about 2 metres long.</li>
+          <li>🐙 An octopus has three hearts.</li>
+          <li>🧠 Your brain uses about 20% of your body’s energy.</li>
+          <li>🐛 In 1947, engineers found a real moth stuck inside the Harvard Mark II computer — a literal computer “bug”!</li>
+          <li>💻 Computers store everything — text, photos and music — as 0s and 1s.</li>
+          <li>📚 Kerala has the highest literacy rate of any Indian state.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CTA Banner ===== -->
+  <section class="cta-banner">
+    <div class="plane-track" aria-hidden="true">
+      <div class="plane"><i class="fa-solid fa-paper-plane"></i></div>
+    </div>
+    <div class="container cta-inner">
+      <div>
+        <h2>Ready to give your child the right start?</h2>
+        <p>Talk to us today — we're happy to answer your questions.</p>
+      </div>
+      <div class="cta-actions">
+        <a class="btn btn-light" data-call href="#"><i class="fa-solid fa-phone"></i> Call Now</a>
+        <a class="btn btn-whatsapp" data-whatsapp href="#"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Location ===== -->
+  <section class="section section-alt" id="location">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Find Us</span>
+        <h2 class="section-title">Our Location</h2>
+      </div>
+      <div class="location-grid">
+        <div class="map-wrap">
+          <iframe
+            title="Anjaly Tution Centre location map"
+            src="https://maps.google.com/maps?q=9.636191161255804,76.56570044163672&z=16&output=embed"
+            loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+        </div>
+        <div class="loc-info">
+          <div class="info-item">
+            <span class="ii-icon"><i class="fa-solid fa-location-dot"></i></span>
+            <div>
+              <h4>Address</h4>
+              <p>Anjaly Tution Centre<br />Kottayam District, Kerala, India</p>
+            </div>
+          </div>
+          <div class="info-item">
+            <span class="ii-icon"><i class="fa-solid fa-map-pin"></i></span>
+            <div>
+              <h4>GPS Coordinates</h4>
+              <p>9.636191° N, 76.565700° E</p>
+            </div>
+          </div>
+          <div class="info-item">
+            <span class="ii-icon"><i class="fa-solid fa-clock"></i></span>
+            <div>
+              <h4>Class Timings</h4>
+              <p>Mon – Sat: 4:00 PM – 8:00 PM<br />Sunday: 9:00 AM – 1:00 PM</p>
+            </div>
+          </div>
+          <div class="info-item">
+            <span class="ii-icon"><i class="fa-solid fa-phone"></i></span>
+            <div>
+              <h4>Phone</h4>
+              <p><a data-call data-phone-text href="#"></a></p>
+            </div>
+          </div>
+          <div class="info-item">
+            <span class="ii-icon"><i class="fa-solid fa-envelope"></i></span>
+            <div>
+              <h4>Email</h4>
+              <p><a data-email href="#"></a></p>
+            </div>
+          </div>
+          <a class="btn btn-primary btn-block" target="_blank" rel="noopener"
+             href="https://www.google.com/maps/dir/?api=1&destination=9.636191161255804,76.56570044163672">
+            <i class="fa-solid fa-diamond-turn-right"></i> Get Directions
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Contact ===== -->
+  <section class="section" id="contact">
+    <div class="container contact-grid">
+      <div>
+        <span class="eyebrow">Contact</span>
+        <h2 class="section-title">Send us an enquiry</h2>
+        <p>Fill in the form and it will open WhatsApp with your details ready to send — or simply call us directly.</p>
+        <div class="contact-quick">
+          <a class="quick" data-call href="#"><i class="fa-solid fa-phone"></i><span>Call us<strong data-phone-text></strong></span></a>
+          <a class="quick" data-whatsapp href="#"><i class="fa-brands fa-whatsapp"></i><span>WhatsApp<strong>Chat instantly</strong></span></a>
+          <a class="quick" data-sms href="#"><i class="fa-solid fa-comment-sms"></i><span>SMS<strong>Send a text</strong></span></a>
+          <a class="quick" data-email href="#"><i class="fa-solid fa-envelope"></i><span>Email<strong>psanjaly1988@gmail.com</strong></span></a>
+        </div>
+      </div>
+      <form class="enquiry-form" data-enquiry-form>
+        <div class="field"><label>Student Name</label><input name="name" required placeholder="Enter student name" /></div>
+        <div class="field"><label>Phone</label><input name="phone" type="tel" required placeholder="Your phone number" /></div>
+        <div class="field-row">
+          <div class="field"><label>Subject</label>
+            <select name="subject" required>
+              <option value="">Select subject</option>
+              <option>Mathematics</option>
+              <option>Physics</option>
+              <option>Chemistry</option>
+              <option>Biology</option>
+              <option>Computer Science</option>
+              <option>General Science</option>
+              <option>Multiple subjects</option>
+            </select>
+          </div>
+          <div class="field"><label>Class</label>
+            <select name="level" required>
+              <option value="">Select class</option>
+              <option>Primary (1 – 4)</option>
+              <option>Upper Primary (5 – 7)</option>
+              <option>High School (8 – 10)</option>
+              <option>Higher Secondary (+1, +2)</option>
+            </select>
+          </div>
+        </div>
+        <div class="field"><label>Message</label><textarea name="message" rows="3" placeholder="Board (State / CBSE / ICSE), preferred timing, questions…"></textarea></div>
+        <button type="submit" class="btn btn-whatsapp btn-block"><i class="fa-brands fa-whatsapp"></i> Send Enquiry on WhatsApp</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ===== Footer ===== -->
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div>
+        <a href="#home" class="logo light">
+          <span class="logo-mark"><i class="fa-solid fa-graduation-cap"></i></span>
+          <span class="logo-text">Anjaly<small>Tution Centre</small></span>
+        </a>
+        <p class="muted">Maths, Science &amp; Computer Science coaching with care.</p>
+      </div>
+      <div>
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="#about">About</a></li>
+          <li><a href="#courses">Subjects</a></li>
+          <li><a href="#fun">Fun Zone</a></li>
+          <li><a href="#location">Location</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Reach Us</h4>
+        <ul>
+          <li><i class="fa-solid fa-location-dot"></i> Kottayam District, Kerala</li>
+          <li><i class="fa-solid fa-phone"></i> <a data-call data-phone-text href="#"></a></li>
+          <li><i class="fa-brands fa-whatsapp"></i> <a data-whatsapp href="#">Chat on WhatsApp</a></li>
+          <li><i class="fa-solid fa-envelope"></i> <a data-email href="#"></a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="container copyright">© <span id="year"></span> Anjaly Tution Centre. All rights reserved.</div>
+  </footer>
+
+  <!-- ===== Rocket back-to-top ===== -->
+  <button class="rocket-top" id="rocketTop" aria-label="Back to top" title="Back to top">
+    <i class="fa-solid fa-rocket"></i><span class="flame"></span>
+  </button>
+
+  <!-- ===== Floating chat widget ===== -->
+  <div class="chat-widget" id="chatWidget">
+    <div class="chat-panel" id="chatPanel" aria-hidden="true">
+      <div class="chat-head">
+        <span class="logo-mark sm"><i class="fa-solid fa-graduation-cap"></i></span>
+        <div><strong>Anjaly Tution Centre</strong><small>Typically replies within minutes</small></div>
+        <button class="chat-close" id="chatClose" aria-label="Close chat"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="chat-body">
+        <div class="bubble">Hi there! 👋<br />How can we help you today?</div>
+        <div class="quick-replies">
+          <button data-chat-msg="Hi, I'd like to know about admissions.">Admissions</button>
+          <button data-chat-msg="Hi, could you share the fee details?">Fee details</button>
+          <button data-chat-msg="Hi, what are the class timings?">Class timings</button>
+          <button data-chat-msg="Hi, I'd like to book a demo class.">Book demo class</button>
+        </div>
+      </div>
+      <form class="chat-input" id="chatForm">
+        <input id="chatText" placeholder="Type a message…" autocomplete="off" />
+        <button type="submit" aria-label="Send"><i class="fa-solid fa-paper-plane"></i></button>
+      </form>
+      <div class="chat-alt">
+        <a data-call href="#"><i class="fa-solid fa-phone"></i> Call</a>
+        <a data-sms href="#"><i class="fa-solid fa-comment-sms"></i> SMS</a>
+        <a data-email href="#"><i class="fa-solid fa-envelope"></i> Email</a>
+      </div>
+    </div>
+    <button class="chat-fab" id="chatFab" aria-label="Open chat"><i class="fa-brands fa-whatsapp"></i></button>
+  </div>
+
+  <!-- ===== Enquiry modal ===== -->
+  <div class="modal" id="enquiryModal" aria-hidden="true">
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="modal-close" data-close-modal aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+      <h3 id="modalTitle">Quick Enquiry</h3>
+      <p class="muted">Share a few details and we'll get back to you.</p>
+      <form class="enquiry-form plain" data-enquiry-form>
+        <div class="field"><label>Student Name</label><input name="name" required placeholder="Enter student name" /></div>
+        <div class="field"><label>Phone</label><input name="phone" type="tel" required placeholder="Your phone number" /></div>
+        <div class="field-row">
+          <div class="field"><label>Subject</label>
+            <select name="subject" required>
+              <option value="">Select subject</option>
+              <option>Mathematics</option>
+              <option>Physics</option>
+              <option>Chemistry</option>
+              <option>Biology</option>
+              <option>Computer Science</option>
+              <option>General Science</option>
+              <option>Multiple subjects</option>
+            </select>
+          </div>
+          <div class="field"><label>Class</label>
+            <select name="level" required>
+              <option value="">Select class</option>
+              <option>Primary (1 – 4)</option>
+              <option>Upper Primary (5 – 7)</option>
+              <option>High School (8 – 10)</option>
+              <option>Higher Secondary (+1, +2)</option>
+            </select>
+          </div>
+        </div>
+        <div class="field"><label>Message</label><textarea name="message" rows="2" placeholder="Optional"></textarea></div>
+        <button type="submit" class="btn btn-whatsapp btn-block"><i class="fa-brands fa-whatsapp"></i> Send on WhatsApp</button>
+        <a class="btn btn-outline btn-block" data-call href="#"><i class="fa-solid fa-phone"></i> Or Call Us Now</a>
+      </form>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script src="fun.js"></script>
+</body>
+</html>
