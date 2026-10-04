@@ -16,6 +16,7 @@
   };
 
   const MATH = ["+", "×", "÷", "π", "√", "∑", "∞", "∫", "Δ", "λ", "Ω", "H₂O", "CO₂", "</>", "01", "⚛", "🧪", "🧬", "🔬"];
+  const COSMIC = ["★", "✦", "✧", "☄️", "🪐", "🌟", "✨", "🌙", "🚀", "☀️"];
   const CELEBRATE = ["🎉", "⭐", "📚", "✏️", "📐", "🎓", "🌟", "✨"];
   const COLORS = ["#4f46e5", "#db2777", "#f59e0b", "#16a34a", "#0284c7", "#7c3aed"];
 
@@ -192,7 +193,7 @@
   // Click / tap empty space in the hero for a burst of maths symbols
   hero.addEventListener("click", (e) => {
     if (e.target.closest("a, button, input, select, textarea")) return;
-    burst(e.clientX, e.clientY, MATH, 12);
+    burst(e.clientX, e.clientY, hero.classList.contains("space") ? COSMIC : MATH, 12);
   });
 
   // Celebrate an enquiry being sent
@@ -497,6 +498,8 @@
 
   // ---------- Binary lights ----------
   const BIT_VALUES = [128, 64, 32, 16, 8, 4, 2, 1];
+  const bitsEl = $("bits");
+  let bitsTouched = false;
   const binNote = $("binNote");
   const binScoreEl = $("binScore");
   let binValue = 0;
@@ -514,7 +517,19 @@
     b.addEventListener("click", () => toggleBit(v));
     return b;
   });
-  $("bits").replaceChildren(...bitBtns);
+  bitsEl.replaceChildren(...bitBtns);
+  bitBtns.forEach((b, i) => b.style.setProperty("--n", BIT_VALUES.length - 1 - i));
+  if (!reduceMotion) {
+    new IntersectionObserver(
+      ([e]) => {
+        if (!e.isIntersecting || bitsTouched) return;
+        bitsEl.classList.remove("chase");
+        void bitsEl.offsetWidth;
+        bitsEl.classList.add("chase");
+      },
+      { threshold: 0.6 }
+    ).observe(bitsEl);
+  }
 
   const renderBinary = () => {
     $("binCode").textContent = binValue.toString(2).padStart(8, "0");
@@ -527,6 +542,8 @@
     });
   };
   const toggleBit = (v) => {
+    bitsTouched = true;
+    bitsEl.classList.remove("chase");
     binValue ^= v;
     renderBinary();
     if (binSolved) return;
@@ -590,6 +607,23 @@
       },
       { passive: true }
     );
+    // Touch screens have no pointer to follow, so the owl watches you scroll instead
+    if (!finePointer) {
+      let lastY = window.scrollY;
+      let rest;
+      window.addEventListener(
+        "scroll",
+        () => {
+          const dy = Math.sign(window.scrollY - lastY) * 4.5;
+          lastY = window.scrollY;
+          if (!owlVisible) return;
+          pupils.forEach((el) => (el.style.transform = `translate(0px, ${dy}px)`));
+          clearTimeout(rest);
+          rest = setTimeout(() => pupils.forEach((el) => (el.style.transform = "")), 260);
+        },
+        { passive: true }
+      );
+    }
   }
 
   // ---------- Did-you-know ticker: duplicate items for a seamless loop ----------
@@ -647,6 +681,32 @@
       if (e.propertyName === "opacity" && el.classList.contains("visible") && el.style.getPropertyValue("--i")) {
         el.style.setProperty("--i", "0");
       }
+    });
+  }
+
+  // ---------- Cards come alive in the middle of the screen (phones have no hover) ----------
+  if (!reduceMotion) {
+    const focusBand = new IntersectionObserver(
+      (entries) => entries.forEach((e) => e.target.classList.toggle("in-focus", e.isIntersecting)),
+      { rootMargin: "-38% 0px -38% 0px" }
+    );
+    document.querySelectorAll(".course-card, .why").forEach((el) => focusBand.observe(el));
+
+    // Section labels drop in letter by letter (screen readers get the plain text)
+    document.querySelectorAll(".eyebrow").forEach((eb) => {
+      const text = eb.textContent;
+      const sr = document.createElement("span");
+      sr.className = "sr-only";
+      sr.textContent = text;
+      const letters = Array.from(text).map((ch, i) => {
+        const span = document.createElement("span");
+        span.className = "ch";
+        span.setAttribute("aria-hidden", "true");
+        span.style.setProperty("--c", i);
+        span.textContent = ch === " " ? "\u00a0" : ch;
+        return span;
+      });
+      eb.replaceChildren(sr, ...letters);
     });
   }
 
@@ -761,26 +821,37 @@
     magnet: '<path d="M14 8v24a18 18 0 0 0 36 0V8H40v24a8 8 0 0 1-16 0V8z"/><path d="M14 16h10M40 16h10"/>',
     compass: '<circle cx="32" cy="32" r="27"/><path d="M32 7 38 32 32 57 26 32Z"/><path d="M32 7 38 32H26Z" class="fill"/><path d="M5 32h6M53 32h6M32 1v4"/>',
     globe: '<circle cx="32" cy="28" r="20"/><path d="M12 28h40M32 8c8 8 8 32 0 40M32 8c-8 8-8 32 0 40"/><path d="M32 48v8M22 58h20"/>',
+    bulb: '<path d="M24 42c0-6-8-9-8-19a16 16 0 0 1 32 0c0 10-8 13-8 19z"/><path d="M25 48h14M27 54h10"/>',
+    plane: '<path d="M58 6 4 28l20 6 6 20 8-14 14 8z"/><path d="M24 34 58 6"/>',
     gearBig: gear(12),
     gearSmall: gear(9),
   };
   // speed: px of drift per px of scroll; spin: degrees per px of scroll
+  // m: [left, top, size] on phones/tablets — they peek in from the screen edges (omit = desktop only)
   const SECTION_DOODLES = {
     courses: [
-      { k: "atom", x: "1.5%", y: "16%", s: 92, speed: 0.12, spin: 0.25 },
-      { t: "π", x: "94.5%", y: "12%", s: 70, speed: -0.1, spin: -0.04 },
-      { k: "flask", x: "95%", y: "60%", s: 70, speed: 0.18, spin: 0.05, c: "#16a34a" },
-      { t: "x²", x: "2.5%", y: "72%", s: 54, speed: -0.15, spin: 0.06, c: "#db2777" },
+      { k: "atom", x: "1.5%", y: "16%", s: 92, m: ["-30px", "5%", 72], speed: 0.12, spin: 0.25 },
+      { t: "π", x: "94.5%", y: "12%", s: 70, m: ["calc(100% - 30px)", "30%", 56], speed: -0.1, spin: -0.04 },
+      { k: "flask", x: "95%", y: "60%", s: 70, m: ["calc(100% - 34px)", "68%", 64], speed: 0.18, spin: 0.05, c: "#16a34a" },
+      { t: "x²", x: "2.5%", y: "72%", s: 54, m: ["-16px", "50%", 46], speed: -0.15, spin: 0.06, c: "#db2777" },
     ],
     why: [
-      { k: "gearBig", x: "1.5%", y: "34%", s: 96, speed: 0.08, spin: 0.3 },
-      { k: "gearSmall", x: "calc(1.5% + 68px)", y: "calc(34% + 47px)", s: 70, speed: 0.08, spin: -0.4 },
-      { k: "magnet", x: "94%", y: "22%", s: 64, speed: -0.12, spin: 0.1, c: "#db2777" },
-      { k: "dna", x: "95%", y: "66%", s: 72, speed: 0.15, spin: 0.03, c: "#0284c7" },
+      { k: "gearBig", x: "1.5%", y: "34%", s: 96, m: ["-36px", "8%", 78], speed: 0.08, spin: 0.3 },
+      { k: "gearSmall", x: "calc(1.5% + 68px)", y: "calc(34% + 47px)", s: 70, m: ["calc(-36px + 55px)", "calc(8% + 38px)", 57], speed: 0.08, spin: -0.4 },
+      { k: "magnet", x: "94%", y: "22%", s: 64, m: ["calc(100% - 32px)", "42%", 60], speed: -0.12, spin: 0.1, c: "#db2777" },
+      { k: "dna", x: "95%", y: "66%", s: 72, m: ["calc(100% - 30px)", "76%", 62], speed: 0.15, spin: 0.03, c: "#0284c7" },
+    ],
+    fun: [
+      { t: "Δ", x: "4%", y: "5%", s: 70, m: ["-14px", "1.5%", 50], speed: -0.1, spin: 0.12, c: "#f59e0b" },
+      { k: "bulb", x: "93%", y: "4%", s: 74, m: ["calc(100% - 34px)", "2.5%", 60], speed: 0.1, spin: 0.04, c: "#f59e0b" },
     ],
     location: [
-      { k: "compass", x: "1.5%", y: "24%", s: 96, speed: 0.1, spin: 0.4, c: "#f59e0b" },
-      { k: "globe", x: "94%", y: "58%", s: 80, speed: -0.12, spin: 0 },
+      { k: "compass", x: "1.5%", y: "24%", s: 96, m: ["calc(100% - 42px)", "4%", 80], speed: 0.1, spin: 0.4, c: "#f59e0b" },
+      { k: "globe", x: "94%", y: "58%", s: 80, m: ["-30px", "55%", 66], speed: -0.12, spin: 0 },
+    ],
+    contact: [
+      { k: "plane", x: "3%", y: "18%", s: 70, m: ["-20px", "3%", 56], speed: -0.14, spin: 0.05, c: "#0284c7" },
+      { t: "{ }", x: "94%", y: "62%", s: 60, m: ["calc(100% - 30px)", "40%", 48], speed: 0.12, spin: -0.05, c: "#7c3aed" },
     ],
   };
   const sectionDoodles = Object.entries(SECTION_DOODLES).flatMap(([id, items]) => {
@@ -791,11 +862,11 @@
     layer.setAttribute("aria-hidden", "true");
     const els = items.map((it) => {
       const el = document.createElement("div");
-      el.className = it.t ? "sd-item sd-text" : "sd-item";
-      el.style.cssText = `left:${it.x};top:${it.y};width:${it.s}px;height:${it.s}px;color:${it.c || "var(--primary)"}`;
+      el.className = `sd-item${it.t ? " sd-text" : ""}${it.m ? "" : " desk-only"}`;
+      const [mx, my, ms] = it.m || [it.x, it.y, it.s];
+      el.style.cssText = `--x:${it.x};--y:${it.y};--s:${it.s}px;--mx:${mx};--my:${my};--ms:${ms}px;color:${it.c || "var(--primary)"}`;
       if (it.t) {
         el.textContent = it.t;
-        el.style.fontSize = `${it.s * 0.8}px`;
       } else {
         el.innerHTML = `<svg viewBox="0 0 64 64">${DOODLE[it.k]}</svg>`;
       }
@@ -811,6 +882,8 @@
   const tubeLiquid = $("tubeLiquid");
   const tubeLabel = $("tubeLabel");
   const heroVisual = hero.querySelector(".hero-visual");
+  const orbitEl = hero.querySelector(".orbit");
+  const rocketRing = $("rocketRing");
 
   scrollHooks.push((p) => {
     const vh = window.innerHeight;
@@ -825,6 +898,8 @@
     tubeLiquid.style.setProperty("--h", Math.round(262 - p * 222)); // purple → blue → green → amber
     tubeLabel.textContent = `${Math.round(p * 100)}%`;
     tubeMeter.classList.toggle("show", y > 200);
+    rocketRing.style.strokeDashoffset = `${(100 - p * 100).toFixed(1)}`;
+    rocket.classList.toggle("full", p > 0.985);
     if (reduceMotion) return;
     sectionDoodles.forEach((sd, i) => {
       const r = sectionRects[i];
@@ -838,14 +913,193 @@
     if (y < heroH) {
       doodles.style.translate = `0 ${(y * 0.35).toFixed(1)}px`;
       heroVisual.style.translate = `0 ${(y * -0.06).toFixed(1)}px`;
+      orbitEl.style.setProperty("--boost", `${(y * 0.25).toFixed(1)}deg`); // scrolling spins the subject planets faster
     }
   });
+
+  // ---------- Universe mode: hovering the hero (or tapping it on phones) turns it into space ----------
+  const canvas = $("cosmos");
+  const ctx = canvas.getContext("2d");
+  const hint = $("spaceHint");
+  const STAR_COLORS = [[255, 255, 255], [199, 210, 254], [249, 168, 212], [253, 230, 138], [165, 243, 252]];
+  const HINTS = finePointer
+    ? ["✨ Hover to explore the universe", "🪐 Click anywhere for a supernova!"]
+    : ["✨ Tap to explore the universe", "🪐 Tap again for a supernova!"];
+  let stars = [];
+  let shooting = [];
+  let ripples = [];
+  let cw = 0;
+  let chh = 0;
+  let spaceOn = false;
+  let heroInView = true;
+  let cosmosRaf = 0;
+  let lastT = 0;
+  let nextShoot = 0;
+  const cursor = { x: 0, y: 0, active: false };
+  hint.textContent = HINTS[0];
+
+  const sizeCosmos = () => {
+    const r = hero.getBoundingClientRect();
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    cw = r.width;
+    chh = r.height;
+    canvas.width = Math.round(cw * dpr);
+    canvas.height = Math.round(chh * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const count = Math.min(260, Math.round((cw * chh) / 5200));
+    stars = Array.from({ length: count }, () => ({
+      x: Math.random() * cw,
+      y: Math.random() * chh,
+      z: rand(0.25, 1),
+      r: rand(0.5, 1.8),
+      ph: rand(0, Math.PI * 2),
+      sp: rand(0.8, 2.4),
+      c: pick(STAR_COLORS),
+    }));
+  };
+
+  const drawCosmos = (t) => {
+    cosmosRaf = 0;
+    const dt = Math.min(50, t - (lastT || t));
+    lastT = t;
+    ctx.clearRect(0, 0, cw, chh);
+    const hue = (t / 60) % 360; // constellation colours keep shifting
+    const ox = cursor.active ? (cursor.x - cw / 2) / cw : 0;
+    const oy = cursor.active ? (cursor.y - chh / 2) / chh : 0;
+    const near = [];
+    for (const st of stars) {
+      st.x += 0.004 * dt * st.z;
+      if (st.x > cw + 20) st.x = -20;
+      let x = st.x - ox * 50 * st.z;
+      let y = st.y - oy * 50 * st.z;
+      if (cursor.active) {
+        const dx = cursor.x - x;
+        const dy = cursor.y - y;
+        const d = Math.hypot(dx, dy) || 1;
+        if (d < 150) {
+          const pull = (1 - d / 150) * 16; // a little gravity towards the cursor
+          x += (dx / d) * pull;
+          y += (dy / d) * pull;
+          near.push([x, y, d]);
+        }
+      }
+      const a = reduceMotion ? 0.8 : 0.4 + 0.6 * Math.abs(Math.sin(t * 0.001 * st.sp + st.ph));
+      ctx.fillStyle = `rgba(${st.c[0]},${st.c[1]},${st.c[2]},${a.toFixed(2)})`;
+      ctx.beginPath();
+      ctx.arc(x, y, st.r * (0.6 + st.z * 0.7), 0, Math.PI * 2);
+      ctx.fill();
+    }
+    // Constellations around the cursor
+    ctx.lineWidth = 0.8;
+    for (let i = 0; i < near.length; i++) {
+      const [x1, y1, d1] = near[i];
+      ctx.strokeStyle = `hsla(${hue}, 90%, 82%, ${((1 - d1 / 150) * 0.65).toFixed(2)})`;
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(cursor.x, cursor.y);
+      ctx.stroke();
+      for (let j = i + 1; j < near.length; j++) {
+        const [x2, y2] = near[j];
+        const dd = Math.hypot(x2 - x1, y2 - y1);
+        if (dd < 70) {
+          ctx.strokeStyle = `hsla(${(hue + 60) % 360}, 90%, 80%, ${((1 - dd / 70) * 0.5).toFixed(2)})`;
+          ctx.beginPath();
+          ctx.moveTo(x1, y1);
+          ctx.lineTo(x2, y2);
+          ctx.stroke();
+        }
+      }
+    }
+    // Shooting stars
+    if (!reduceMotion && t > nextShoot) {
+      shooting.push({ x: rand(0.05, 0.8) * cw, y: rand(0, 0.35) * chh, vx: rand(0.5, 0.9), vy: rand(0.18, 0.38), life: 0 });
+      nextShoot = t + rand(1600, 4000);
+    }
+    ctx.lineWidth = 2;
+    shooting = shooting.filter((sh) => {
+      sh.life += dt;
+      sh.x += sh.vx * dt;
+      sh.y += sh.vy * dt;
+      const tx = sh.x - sh.vx * 110;
+      const ty = sh.y - sh.vy * 110;
+      const g = ctx.createLinearGradient(sh.x, sh.y, tx, ty);
+      g.addColorStop(0, "rgba(255,255,255,0.95)");
+      g.addColorStop(1, "rgba(255,255,255,0)");
+      ctx.strokeStyle = g;
+      ctx.beginPath();
+      ctx.moveTo(sh.x, sh.y);
+      ctx.lineTo(tx, ty);
+      ctx.stroke();
+      return sh.life < 1500 && sh.x < cw + 150 && sh.y < chh + 150;
+    });
+    // Supernova ripples
+    ripples = ripples.filter((rp) => {
+      rp.life += dt;
+      const k = rp.life / 900;
+      ctx.strokeStyle = `hsla(${(hue + 180) % 360}, 90%, 80%, ${(1 - k).toFixed(2)})`;
+      ctx.beginPath();
+      ctx.arc(rp.x, rp.y, 8 + k * 170, 0, Math.PI * 2);
+      ctx.stroke();
+      return k < 1;
+    });
+    if (spaceOn && heroInView && !reduceMotion) cosmosRaf = requestAnimationFrame(drawCosmos);
+  };
+  const startCosmos = () => {
+    if (!cosmosRaf && spaceOn && heroInView) cosmosRaf = requestAnimationFrame(drawCosmos);
+  };
+
+  const setSpace = (on) => {
+    if (on === spaceOn) return;
+    spaceOn = on;
+    hero.classList.toggle("space", on);
+    hint.textContent = HINTS[on ? 1 : 0];
+    if (on) {
+      if (!stars.length) sizeCosmos();
+      lastT = 0;
+      startCosmos();
+    }
+  };
+
+  if (finePointer) {
+    let leaveTimer;
+    hero.addEventListener("pointerenter", () => {
+      clearTimeout(leaveTimer);
+      setSpace(true);
+    });
+    hero.addEventListener("pointerleave", () => {
+      cursor.active = false;
+      leaveTimer = setTimeout(() => setSpace(false), 400);
+    });
+  }
+  hero.addEventListener("pointermove", (e) => {
+    const r = hero.getBoundingClientRect();
+    cursor.x = e.clientX - r.left;
+    cursor.y = e.clientY - r.top;
+    cursor.active = true;
+  });
+  hero.addEventListener("click", (e) => {
+    if (e.target.closest("a, button, input, select, textarea")) return;
+    if (!spaceOn) {
+      setSpace(true); // phones: first tap opens the universe
+      return;
+    }
+    if (reduceMotion) return;
+    const r = hero.getBoundingClientRect();
+    ripples.push({ x: e.clientX - r.left, y: e.clientY - r.top, life: 0 });
+    startCosmos();
+  });
+  new IntersectionObserver(([e]) => {
+    heroInView = e.isIntersecting;
+    if (!heroInView && !finePointer) setSpace(false); // phones: scrolling away brings daylight back
+    startCosmos();
+  }).observe(hero);
 
   let relayoutTimer;
   window.addEventListener("resize", () => {
     clearTimeout(relayoutTimer);
     relayoutTimer = setTimeout(() => {
       dividers.forEach(layoutDivider);
+      if (stars.length) sizeCosmos();
       queueScrollFx();
     }, 150);
   });

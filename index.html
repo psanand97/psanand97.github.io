@@ -55,6 +55,8 @@
   <!-- ===== Hero ===== -->
   <section class="hero" id="home">
     <div class="hero-bg"></div>
+    <!-- Universe mode: hover (or tap on phones) turns the hero into space -->
+    <div class="hero-space" aria-hidden="true"><canvas id="cosmos"></canvas></div>
 
     <!-- Floating education doodles (decorative) -->
     <div class="hero-doodles" aria-hidden="true">
@@ -142,6 +144,7 @@
         <div class="hero-card float-card fc-3"><i class="fa-solid fa-school"></i> Classes 8 – 12</div>
       </div>
     </div>
+    <span class="space-hint" id="spaceHint" aria-hidden="true">✨ Hover to explore the universe</span>
   </section>
 
   <!-- ===== About ===== -->
@@ -517,6 +520,10 @@
 
   <!-- ===== Rocket back-to-top ===== -->
   <button class="rocket-top" id="rocketTop" aria-label="Back to top" title="Back to top">
+    <svg class="rocket-ring" viewBox="0 0 60 60" aria-hidden="true">
+      <circle class="rr-track" cx="30" cy="30" r="27" />
+      <circle class="rr-fill" id="rocketRing" cx="30" cy="30" r="27" pathLength="100" />
+    </svg>
     <i class="fa-solid fa-rocket"></i><span class="flame"></span>
   </button>
 

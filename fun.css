@@ -113,7 +113,7 @@
   position: absolute; top: 50%; left: 50%; width: var(--size); height: var(--size);
   margin: calc(var(--size) / -2) 0 0 calc(var(--size) / -2);
   border: 2px dashed rgba(79, 70, 229, .22); border-radius: 50%;
-  animation: spin 44s linear infinite; pointer-events: none;
+  animation: spin 44s linear infinite; pointer-events: none; rotate: var(--boost, 0deg);
 }
 .orbit-item {
   position: absolute; top: 50%; left: 50%; width: 46px; height: 46px; margin: -23px 0 0 -23px;
@@ -122,6 +122,7 @@
 .oi {
   width: 100%; height: 100%; border-radius: 50%; display: grid; place-items: center; font-size: 18px;
   border: 3px solid #fff; box-shadow: var(--shadow); animation: spin 44s linear infinite reverse;
+  rotate: calc(var(--boost, 0deg) * -1);
 }
 
 /* Click anywhere in the hero → maths symbols burst */
@@ -400,14 +401,23 @@ html, body { overflow-x: clip; }
 
 /* Doodles that drift and turn with the scroll (wide screens only) */
 .sec-doodles { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
-.sd-item { position: absolute; display: grid; place-items: center; opacity: .16; will-change: transform; }
+.sd-item {
+  position: absolute; left: var(--x); top: var(--y); width: var(--s); height: var(--s);
+  display: grid; place-items: center; opacity: .16; will-change: transform;
+}
 .sd-item svg {
   width: 100%; height: 100%; overflow: visible;
   fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round;
 }
 .sd-item .fill { fill: currentColor; stroke: none; }
-.sd-text { font: 700 1em/1 "Caveat", cursive; }
-@media (max-width: 1199px) { .sec-doodles { display: none; } }
+.sd-text { font: 700 calc(var(--s) * .8)/1 "Caveat", cursive; }
+.fun-zone .facts { position: relative; z-index: 1; }
+@media (max-width: 1199px) {
+  /* Phones & tablets: doodles peek in from the screen edges */
+  .sd-item { left: var(--mx); top: var(--my); width: var(--ms); height: var(--ms); opacity: .2; }
+  .sd-text { font-size: calc(var(--ms) * .8); }
+  .sd-item.desk-only { display: none; }
+}
 
 /* Test-tube scroll meter */
 .tube-meter {
@@ -436,6 +446,104 @@ html, body { overflow-x: clip; }
 .tube-liquid i:nth-child(4) { left: 14px; width: 3px; height: 3px; animation-delay: 1.9s; }
 @keyframes tubeBubble { 0% { transform: translateY(0); opacity: 0; } 15% { opacity: 1; } 100% { transform: translateY(-150px); opacity: 0; } }
 .tube-label { margin-top: 8px; padding: 0 7px; border-radius: 8px; background: rgba(255, 255, 255, .9); color: var(--primary); font: 700 18px "Caveat", cursive; box-shadow: 0 2px 8px rgba(15, 23, 42, .12); }
+
+/* ---------- Universe mode (hero hover / tap) ---------- */
+.hero-space {
+  position: absolute; inset: 0; z-index: -1; opacity: 0; pointer-events: none; transition: opacity .8s ease;
+  background:
+    radial-gradient(ellipse at 18% 28%, rgba(124, 58, 237, .55), transparent 55%),
+    radial-gradient(ellipse at 82% 18%, rgba(219, 39, 119, .38), transparent 50%),
+    radial-gradient(ellipse at 60% 90%, rgba(14, 165, 233, .32), transparent 55%),
+    #0b1026;
+}
+.hero-space::before {
+  /* a second nebula that slowly fades in and out, so the colours keep changing */
+  content: ""; position: absolute; inset: 0; opacity: 0;
+  background:
+    radial-gradient(ellipse at 75% 70%, rgba(34, 197, 94, .3), transparent 55%),
+    radial-gradient(ellipse at 30% 80%, rgba(245, 158, 11, .28), transparent 50%),
+    radial-gradient(ellipse at 50% 10%, rgba(56, 189, 248, .35), transparent 55%);
+  animation: nebula 14s ease-in-out infinite; animation-play-state: paused;
+}
+.hero.space .hero-space { opacity: 1; }
+.hero.space .hero-space::before { animation-play-state: running; }
+@keyframes nebula { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
+#cosmos { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+.hero h1, .hero .lead, .hero .lead strong, .typer, .formula { transition: color .8s ease, opacity .8s ease, text-shadow .8s ease; }
+.hero-doodles { transition: color .8s ease; }
+.doodle svg { transition: opacity .8s ease, filter .8s ease; }
+.hero.space h1 { color: #fff; }
+.hero.space .highlight { background-image: linear-gradient(135deg, #a5b4fc, #f9a8d4); }
+.hero.space .lead { color: #cbd5e1; }
+.hero.space .lead strong { color: #fff; }
+.hero.space .typer { color: #e2e8f0; }
+.hero.space .typer-word { color: #f9a8d4; background: linear-gradient(transparent 62%, rgba(251, 191, 36, .28) 62%); }
+.hero.space .typer-caret { background: #f9a8d4; }
+.hero.space .hero-doodles { color: #c7d2fe; }
+.hero.space .doodle svg { opacity: .5; filter: drop-shadow(0 0 6px rgba(165, 180, 252, .9)); }
+.hero.space .formula { color: #e0e7ff; opacity: .55; text-shadow: 0 0 10px rgba(165, 180, 252, .9); }
+.hero.space .cmp-circle { stroke: #f9a8d4; }
+.hero.space .orbit { border-color: rgba(199, 210, 254, .35); }
+.hero.space .chip { box-shadow: 0 0 0 1px rgba(255, 255, 255, .18), 0 0 18px rgba(165, 180, 252, .25); }
+
+.space-hint {
+  position: absolute; left: 50%; bottom: 22px; z-index: 2; padding: 6px 14px; border-radius: 999px;
+  background: rgba(255, 255, 255, .8); color: var(--primary); box-shadow: var(--shadow);
+  font: 600 13px "Poppins", sans-serif; white-space: nowrap; pointer-events: none;
+  transform: translateX(-50%); animation: hintBob 2.6s ease-in-out infinite;
+  transition: background .8s, color .8s, box-shadow .8s;
+}
+.hero.space .space-hint { background: rgba(255, 255, 255, .1); color: #e0e7ff; box-shadow: 0 0 0 1px rgba(255, 255, 255, .22); }
+@keyframes hintBob { 0%, 100% { translate: 0 0; } 50% { translate: 0 -5px; } }
+
+/* ---------- Cards come alive in the middle of the screen ---------- */
+.course-card.in-focus { box-shadow: var(--shadow-lg); border-color: transparent; }
+.course-card.in-focus .c1 i { animation: wiggle .6s ease-in-out; }
+.course-card.in-focus .c2 i { animation: pop .5s ease; }
+.course-card.in-focus .c3 i { animation: wiggle .5s ease-in-out 2; }
+.course-card.in-focus .c4 i { animation: flip 1s ease; }
+.course-card.in-focus .c5 i { animation: spin 1.4s linear infinite; }
+.course-card.in-focus .c6 i { animation: pop .5s ease 2; }
+.course-card.in-focus .cc-icon.c3::before { animation: bubble 1s ease-out infinite; }
+.course-card.in-focus .cc-icon.c3::after { left: 56%; animation: bubble 1s ease-out .5s infinite; }
+.course-card.in-focus .topic-tags li { animation: tagPop .45s cubic-bezier(.34, 1.56, .64, 1) both; }
+.course-card.in-focus .topic-tags li:nth-child(2) { animation-delay: .08s; }
+.course-card.in-focus .topic-tags li:nth-child(3) { animation-delay: .16s; }
+@keyframes tagPop { 0% { transform: scale(1); } 50% { transform: scale(1.15); background: #fde68a; color: #92400e; } 100% { transform: scale(1); } }
+.why.in-focus { background: var(--bg-alt); border-color: #c7d2fe; }
+.why.in-focus i { animation: flip .8s ease; }
+
+/* Section labels drop in letter by letter */
+.eyebrow .ch {
+  display: inline-block; opacity: 0; transform: translateY(10px) rotate(10deg);
+  transition: opacity .35s, transform .5s cubic-bezier(.34, 1.56, .64, 1);
+  transition-delay: calc(var(--c) * 35ms + .1s);
+}
+.visible .eyebrow .ch { opacity: 1; transform: none; }
+
+/* Binary bulbs light-chase when the board scrolls into view */
+.bits.chase .bit .bulb { animation: chase 1.5s ease both; animation-delay: calc(var(--n) * 110ms); }
+@keyframes chase {
+  0%, 100% { background: rgba(255, 255, 255, .06); box-shadow: none; }
+  25%, 55% {
+    border-color: #fde68a; box-shadow: 0 0 22px 6px rgba(253, 230, 138, .55);
+    background: radial-gradient(circle at 40% 35%, #fffbeb, #fde68a 45%, #f59e0b);
+  }
+}
+
+/* Rocket fuel ring fills as you scroll */
+.rocket-ring { position: absolute; inset: -6px; width: calc(100% + 12px); height: calc(100% + 12px); overflow: visible; transform: rotate(-90deg); pointer-events: none; }
+.rr-track { fill: none; stroke: rgba(79, 70, 229, .15); stroke-width: 4; }
+.rr-fill { fill: none; stroke: #f59e0b; stroke-width: 4; stroke-linecap: round; stroke-dasharray: 100; stroke-dashoffset: 100; transition: stroke-dashoffset .15s linear, stroke .3s; }
+.rocket-top.full .rr-fill { stroke: #22c55e; }
+.rocket-top.full:not(.launch) { animation: readyGlow 1.2s ease-in-out infinite; }
+.rocket-top.full:not(.launch)::after {
+  content: "Ready for lift-off!"; position: absolute; left: calc(100% + 12px); top: 50%; translate: 0 -50%;
+  padding: 4px 10px; border-radius: 10px; background: #fff; color: var(--ink); box-shadow: var(--shadow);
+  font: 700 17px "Caveat", cursive; white-space: nowrap;
+}
+@keyframes readyGlow { 0%, 100% { box-shadow: var(--shadow-lg); } 50% { box-shadow: 0 0 0 8px rgba(34, 197, 94, .2), var(--shadow-lg); } }
 
 /* Pause decorative animations while their section is off screen */
 .is-paused, .is-paused * { animation-play-state: paused !important; }
@@ -484,7 +592,8 @@ html, body { overflow-x: clip; }
 @media (prefers-reduced-motion: reduce) {
   .doodle svg, .formula, .orbit, .oi, .float-card, .plane, .plane i, .facts-track, .cmp-arm, .cmp-circle,
   .badge i, .hero-actions .btn-primary::after, .chip:hover i, .owl-eyes, .board-hint i, .pr-knob, .typer-caret,
-  .facts-label i, .doodle .needle, .chat-fab::before, .photo-tag, .tube-liquid i, .cc-icon {
+  .facts-label i, .doodle .needle, .chat-fab::before, .photo-tag, .tube-liquid i, .cc-icon,
+  .space-hint, .hero-space::before, .rocket-top.full {
     animation: none !important;
   }
   .reveal, .reveal.reveal-flip, .reveal.reveal-pop, .reveal.reveal-swing, .reveal.reveal-right, .reveal.reveal-left {
@@ -494,5 +603,6 @@ html, body { overflow-x: clip; }
   .plane-track { display: none; }
   .facts-window { overflow-x: auto; -webkit-mask-image: none; mask-image: none; }
   .reveal .section-title::after { transform: none; transition: none; }
+  .eyebrow .ch { opacity: 1; transform: none; transition: none; }
   html { scroll-behavior: auto; }
 }
