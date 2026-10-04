@@ -5,7 +5,7 @@ const CONFIG = {
   // How the number is shown on the page
   phoneDisplay: "+91 81291 10905",
   email: "psanjaly1988@gmail.com",
-  greeting: "Hello Anjaly Tution Centre! ",
+  greeting: "Hello Anjaly Tuition Centre! ",
 };
 
 const waLink = (text = "") =>
@@ -20,7 +20,7 @@ document.querySelectorAll("[data-whatsapp]").forEach((a) => {
   a.rel = "noopener";
 });
 document.querySelectorAll("[data-email]").forEach((a) => {
-  a.href = `mailto:${CONFIG.email}?subject=${encodeURIComponent("Enquiry - Anjaly Tution Centre")}`;
+  a.href = `mailto:${CONFIG.email}?subject=${encodeURIComponent("Enquiry - Anjaly Tuition Centre")}`;
   if (!a.textContent.trim()) a.textContent = CONFIG.email;
 });
 document.querySelectorAll("[data-phone-text]").forEach((el) => (el.textContent = CONFIG.phoneDisplay));

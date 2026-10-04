@@ -80,7 +80,7 @@
       document.title = "📚 Psst… class is still on!";
       iconLinks.forEach((l) => l.setAttribute("href", sleepyIcon));
     } else {
-      document.title = "🎉 Welcome back! | Anjaly Tution Centre";
+      document.title = "🎉 Welcome back! | Anjaly Tuition Centre";
       iconLinks.forEach((l, i) => l.setAttribute("href", iconHrefs[i]));
       titleTimer = setTimeout(() => (document.title = baseTitle), 2500);
     }
